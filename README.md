@@ -2,8 +2,9 @@
 Backend code for the CranioQ questionnaire application.
 
 # Dependencies
-- `Django` framework
-- `MySQL` database
-- `mysqlclient` Python library to connect to the database
+## Python Modules
+To install all required modules run 
+`python -m pip install django mysqlclient django-cors-headers djangorestframework markdown django-filter`
 
-Install these dependencies to use the software.
+## Further Dependencies
+The application uses a `MySQL` database. Also, remember to adjust the django database settings to work with your installation.
