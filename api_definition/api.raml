@@ -1,0 +1,102 @@
+#%RAML 1.0
+---
+title: CranioQ API
+version: v0.1
+
+######################
+##### Ressources #####
+######################
+
+/auth:
+  /login:
+    post:
+      description: This endpoint takes credentials and logs in the user if they are correct..
+      body:
+        application/json:
+          example: |
+            {
+              "email": "john.doe@gmail.com",
+              "password": "pass$w0rd"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "loginSuccess": true,
+                  "displayableMessage": "Login successfull.",
+                  "errorMessage": "",
+                  "userData": {
+                      "ID": 1,
+                      "email": "john.doe@gmail.com",
+                      "firstName": "John",
+                      "lastName": "Doe"
+                    }
+                }
+
+  /register:
+    post:
+      description: This enpoint creates a new GP account.
+      body:
+        application/json:
+          example: |
+            {
+              "email": "john.doe@gmail.com",
+              "password": "pass$w0rd",
+              "repeatPassword": "pass$w0rd",
+              "firstName": "John",
+              "lastName": "Doe"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "registerSuccess": true,
+                  "displayableMessage": "Successfully registered.",
+                  "errorMessage": ""
+                }
+
+/user:
+  /{userID}:
+    get:
+      description: Fetch the user data of a specific user.
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "ID": 1,
+                  "email": "john.doe@gmail.com",
+                  "firstName": "John",
+                  "lastName": "Doe"
+                }
+    put:
+      description: Updates the user data of a specific user except for his password. This action can only be performed by the user himself or an admin.
+      body:
+        application/json:
+          example: |
+            {
+              "email": "doe.john@gmail.com",
+              "firstName": "John",
+              "lastName": "Doe"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "changeSuccess": true,
+                  "displayableMessage": "Details changed.",
+                  "errorMessage": "",
+                  "userData": {
+                    "ID": 1,
+                    "email": "doe.john@gmail.com",
+                    "firstName": "John",
+                    "lastName": "Doe"
+                  }
+                }
