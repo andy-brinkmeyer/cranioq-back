@@ -177,9 +177,7 @@ pre code {
 </code></pre></div></div><div class="tab-pane" id="auth_login_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "token": "asdkhas6673nasd7dn4n8asd893",
   "id": 3,
-  "email": "john.doe@gmail.com",
-  "firstName": "John",
-  "lastName": "Doe"
+  "role": "gp"
 }
 </code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "errorMessage": "The email or password provided is incorrect"
@@ -200,7 +198,8 @@ pre code {
   "ID": 1,
   "email": "john.doe@gmail.com",
   "firstName": "John",
-  "lastName": "Doe"
+  "lastName": "Doe",
+  "role": "specialist"
 }
 </code></pre></div></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="user__userid__put"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put</span> <span class="parent">/user</span>/{userID}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the user data of a specific user except for his password. This action can only be performed by the user himself or an admin.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#user__userid__put_request" data-toggle="tab">Request</a></li><li><a href="#user__userid__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="user__userid__put_request"><h3>URI Parameters</h3><ul><li><strong>userID</strong>: <em><span class="required">required</span>(string)</em></li></ul><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "email": "doe.john@gmail.com",
@@ -212,9 +211,7 @@ pre code {
   "displayableMessage": "Details changed.",
   "userData": {
     "id": 1,
-    "email": "doe.john@gmail.com",
-    "firstName": "John",
-    "lastName": "Doe"
+    "role": "specialist"
   }
 }
 </code></pre></div></div></div></div></div></div></div></div></div></div></div></div><div class="col-md-3"><div id="sidebar" class="hidden-print affix" role="complementary"><ul class="nav nav-pills nav-stacked"><li><a href="#auth">/auth</a></li><li><a href="#user">/user</a></li></ul></div></div></div></div></body></html>

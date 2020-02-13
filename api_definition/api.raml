@@ -26,9 +26,7 @@ version: v0.1
                 {
                   "token": "asdkhas6673nasd7dn4n8asd893",
                   "id": 3,
-                  "email": "john.doe@gmail.com",
-                  "firstName": "John",
-                  "lastName": "Doe"
+                  "role": "gp"
                 }
         400:
           body:
@@ -75,7 +73,8 @@ version: v0.1
                   "ID": 1,
                   "email": "john.doe@gmail.com",
                   "firstName": "John",
-                  "lastName": "Doe"
+                  "lastName": "Doe",
+                  "role": "specialist"
                 }
     put:
       description: Updates the user data of a specific user except for his password. This action can only be performed by the user himself or an admin.
@@ -97,8 +96,6 @@ version: v0.1
                   "displayableMessage": "Details changed.",
                   "userData": {
                     "id": 1,
-                    "email": "doe.john@gmail.com",
-                    "firstName": "John",
-                    "lastName": "Doe"
+                    "role": "specialist"
                   }
                 }

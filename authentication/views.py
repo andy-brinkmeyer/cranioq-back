@@ -10,6 +10,7 @@ class LoginView(ObtainAuthToken):
             'username': request.data['email'],
             'password': request.data['password']
         }
+
         if user_data['username'] == '' or user_data['password'] == '':
             raise ValidationError({'errorMessage': 'One or more fields were left empty.'})
         serializer = self.serializer_class(data=user_data,
@@ -18,10 +19,14 @@ class LoginView(ObtainAuthToken):
             raise ValidationError({'errorMessage': 'The email or password provided is incorrect.'})
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
+
+        if hasattr(user, 'gp'):
+            role = 'gp'
+        else:
+            role = 'none'
+
         return Response({
             'token': token.key,
             'id': user.pk,
-            'email': user.email,
-            'firstName': user.first_name,
-            'lastName': user.last_name
+            'role': role
         })
