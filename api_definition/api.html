@@ -170,20 +170,19 @@ pre code {
 .required {
   color: #f00;
 }
-    </style></head><body data-spy="scroll" data-target="#sidebar"><div class="container"><div class="row"><div class="col-md-9" role="main"><div class="page-header"><h1>CranioQ API API documentation <small>version v0.1</small></h1><p></p></div><div class="panel panel-default"><div class="panel-heading"><h3 id="auth" class="panel-title">/auth</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white resource-modal"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_auth_login"><span class="parent">/auth</span>/login</a> <span class="methods"><a href="#auth_login_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_auth_login" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#auth_login_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>This endpoint takes credentials and logs in the user if they are correct..</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="auth_login_post"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/auth</span>/login</h4></div><div class="modal-body"><div class="alert alert-info"><p>This endpoint takes credentials and logs in the user if they are correct..</p></div><ul class="nav nav-tabs"><li class="active"><a href="#auth_login_post_request" data-toggle="tab">Request</a></li><li><a href="#auth_login_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="auth_login_post_request"><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
+    </style></head><body data-spy="scroll" data-target="#sidebar"><div class="container"><div class="row"><div class="col-md-9" role="main"><div class="page-header"><h1>CranioQ API API documentation <small>version v0.1</small></h1><p></p></div><div class="panel panel-default"><div class="panel-heading"><h3 id="auth" class="panel-title">/auth</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white resource-modal"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_auth_login"><span class="parent">/auth</span>/login</a> <span class="methods"><a href="#auth_login_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_auth_login" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#auth_login_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>This endpoint takes credentials and logs in the user if they are correct.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="auth_login_post"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/auth</span>/login</h4></div><div class="modal-body"><div class="alert alert-info"><p>This endpoint takes credentials and logs in the user if they are correct.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#auth_login_post_request" data-toggle="tab">Request</a></li><li><a href="#auth_login_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="auth_login_post_request"><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "email": "john.doe@gmail.com",
   "password": "pass$w0rd"
 }
 </code></pre></div></div><div class="tab-pane" id="auth_login_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
-  "loginSuccess": true,
-  "displayableMessage": "Login successfull.",
-  "errorMessage": "",
-  "userData": {
-      "ID": 1,
-      "email": "john.doe@gmail.com",
-      "firstName": "John",
-      "lastName": "Doe"
-    }
+  "token": "asdkhas6673nasd7dn4n8asd893",
+  "id": 3,
+  "email": "john.doe@gmail.com",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+</code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
+  "errorMessage": "The email or password provided is incorrect"
 }
 </code></pre></div></div></div></div></div></div></div></div><div class="panel panel-white resource-modal"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_auth_register"><span class="parent">/auth</span>/register</a> <span class="methods"><a href="#auth_register_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_auth_register" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#auth_register_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>This enpoint creates a new GP account.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="auth_register_post"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/auth</span>/register</h4></div><div class="modal-body"><div class="alert alert-info"><p>This enpoint creates a new GP account.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#auth_register_post_request" data-toggle="tab">Request</a></li><li><a href="#auth_register_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="auth_register_post_request"><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "email": "john.doe@gmail.com",
@@ -211,9 +210,8 @@ pre code {
 </code></pre></div></div><div class="tab-pane" id="user__userid__put_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "changeSuccess": true,
   "displayableMessage": "Details changed.",
-  "errorMessage": "",
   "userData": {
-    "ID": 1,
+    "id": 1,
     "email": "doe.john@gmail.com",
     "firstName": "John",
     "lastName": "Doe"
