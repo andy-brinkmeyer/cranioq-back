@@ -2,3 +2,4 @@ venv
 .idea
 my.cnf
 __pycache__
+cranioq_back/settings.py
