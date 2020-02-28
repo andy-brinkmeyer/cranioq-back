@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'authentication.apps.AuthenticationConfig',
+    'questionnaires.apps.QuestionnairesConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -109,7 +110,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': '/Users/andybrinkmeyer/Projekte/CranioQ/cranioq_back/my.cnf',
+            'read_default_file': os.path.join(BASE_DIR, 'my.cnf'),
             'isolation_level': 'read committed',
             'init_command': 'SET default_storage_engine=INNODB'
         },
