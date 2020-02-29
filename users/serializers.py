@@ -14,5 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     def get_role(obj):
         if hasattr(obj, 'gp'):
             return 'gp'
+        elif hasattr(obj, 'specialist'):
+            return 'specialist'
         else:
             return 'anon'

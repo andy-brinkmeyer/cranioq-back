@@ -22,8 +22,10 @@ class LoginView(ObtainAuthToken):
 
         if hasattr(user, 'gp'):
             role = 'gp'
+        elif hasattr(user, 'specialist'):
+            role = 'specialist'
         else:
-            role = 'none'
+            role = 'anon'
 
         return Response({
             'token': token.key,
