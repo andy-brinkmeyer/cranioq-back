@@ -35,6 +35,13 @@ version: v0.1
                 {
                   "error_message": "The email or password provided is incorrect"
                 }
+        415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
+                }
 
   /register:
     post:
@@ -58,6 +65,13 @@ version: v0.1
                   "register_success": true,
                   "displayable_message": "Successfully registered.",
                   "error_message": ""
+                }
+        415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
                 }
 
 /user:
@@ -85,7 +99,7 @@ version: v0.1
                 }
 
     put:
-      description: NOT YET IMPLEMENTED! Updates the user data of a specific user except for his password. This action can only be performed by the user himself or an admin.
+      description: Updates the user data of a specific user except for his password. This action can only be performed by the user himself or an admin.
       body:
         application/json:
           example: |
@@ -100,12 +114,22 @@ version: v0.1
             application/json:
               example: |
                 {
-                  "change_success": true,
-                  "displayable_message": "Details changed.",
-                  "user_data": {
-                    "id": 1,
-                    "role": "specialist"
-                  }
+                  "update_success": true,
+                  "displayable_message": "Details changed."
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "This user does not exist."
+                }
+        415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
                 }
 
 /questionnaire:
@@ -127,3 +151,10 @@ version: v0.1
               {
                 "questionnaire_id": 58
               }
+      415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
+                }
