@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'authentication.apps.AuthenticationConfig',
     'questionnaires.apps.QuestionnairesConfig',
+    'users.apps.UsersConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

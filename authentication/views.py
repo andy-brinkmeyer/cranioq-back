@@ -12,11 +12,11 @@ class LoginView(ObtainAuthToken):
         }
 
         if user_data['username'] == '' or user_data['password'] == '':
-            raise ValidationError({'errorMessage': 'One or more fields were left empty.'})
+            raise ValidationError({'error_message': 'One or more fields were left empty.'})
         serializer = self.serializer_class(data=user_data,
                                            context={'request': request})
         if not serializer.is_valid():
-            raise ValidationError({'errorMessage': 'The email or password provided is incorrect.'})
+            raise ValidationError({'error_message': 'The email or password provided is incorrect.'})
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
