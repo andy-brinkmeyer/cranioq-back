@@ -35,13 +35,6 @@ version: v0.1
                 {
                   "error_message": "The email or password provided is incorrect"
                 }
-        415:
-          body:
-            application/json:
-              example: |
-                {
-                  "error_message": "Wrong data format."
-                }
 
   /register:
     post:
@@ -66,7 +59,7 @@ version: v0.1
                   "displayable_message": "Successfully registered.",
                   "error_message": ""
                 }
-        415:
+        400:
           body:
             application/json:
               example: |
@@ -124,7 +117,7 @@ version: v0.1
                 {
                   "error_message": "This user does not exist."
                 }
-        415:
+        400:
           body:
             application/json:
               example: |
@@ -132,29 +125,30 @@ version: v0.1
                   "error_message": "Wrong data format."
                 }
 
-/questionnaire:
-  post:
-    description: Add a new questionnaire.
-    body:
-      application/json:
-        example: |
-          {
-            "patient_id": "123456789"
-            "email": "john.doe@gmail.com",
-            "agreed": true
-          }
-    responses:
-      200:
-        body:
-          application/json:
-            example: |
-              {
-                "questionnaire_id": 58
-              }
-      415:
+/quests:
+  /quest:
+    post:
+      description: Add a new questionnaire.
+      body:
+        application/json:
+          example: |
+            {
+              "patient_id": "123456789"
+              "email": "john.doe@gmail.com",
+              "agreed": true
+            }
+      responses:
+        201:
           body:
             application/json:
               example: |
                 {
-                  "error_message": "Wrong data format."
+                  "questionnaire_id": 58
                 }
+        400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "error_message": "Wrong data format."
+                  }
