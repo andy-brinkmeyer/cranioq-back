@@ -33,7 +33,14 @@ version: v0.1
             application/json:
               example: |
                 {
-                  "errorMessage": "The email or password provided is incorrect"
+                  "error_message": "The email or password provided is incorrect"
+                }
+        415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
                 }
 
   /register:
@@ -45,9 +52,9 @@ version: v0.1
             {
               "email": "john.doe@gmail.com",
               "password": "pass$w0rd",
-              "repeatPassword": "pass$w0rd",
-              "firstName": "John",
-              "lastName": "Doe"
+              "repeat_password": "pass$w0rd",
+              "first_name": "John",
+              "last_name": "Doe"
             }
       responses:
         200:
@@ -55,27 +62,42 @@ version: v0.1
             application/json:
               example: |
                 {
-                  "registerSuccess": true,
-                  "displayableMessage": "Successfully registered.",
-                  "errorMessage": ""
+                  "register_success": true,
+                  "displayable_message": "Successfully registered.",
+                  "error_message": ""
+                }
+        415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
                 }
 
 /user:
-  /{userID}:
+  /{int:user_id}:
     get:
-      description: Fetch the user data of a specific user.
+      description: Fetch the user data of a specific user. The role field can have the following values, "gp", "specialist" or "anon" for a user without a user group.
       responses:
         200:
           body:
             application/json:
               example: |
                 {
-                  "ID": 1,
+                  "id": 1,
                   "email": "john.doe@gmail.com",
-                  "firstName": "John",
-                  "lastName": "Doe",
+                  "first_name": "John",
+                  "last_name": "Doe",
                   "role": "specialist"
                 }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "This user does not exist."
+                }
+
     put:
       description: Updates the user data of a specific user except for his password. This action can only be performed by the user himself or an admin.
       body:
@@ -83,8 +105,8 @@ version: v0.1
           example: |
             {
               "email": "doe.john@gmail.com",
-              "firstName": "John",
-              "lastName": "Doe"
+              "first_name": "John",
+              "last_name": "Doe"
             }
       responses:
         200:
@@ -92,10 +114,47 @@ version: v0.1
             application/json:
               example: |
                 {
-                  "changeSuccess": true,
-                  "displayableMessage": "Details changed.",
-                  "userData": {
-                    "id": 1,
-                    "role": "specialist"
-                  }
+                  "update_success": true,
+                  "displayable_message": "Details changed."
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "This user does not exist."
+                }
+        415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
+                }
+
+/questionnaire:
+  post:
+    description: Add a new questionnaire.
+    body:
+      application/json:
+        example: |
+          {
+            "patient_id": "123456789"
+            "email": "john.doe@gmail.com",
+            "agreed": true
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "questionnaire_id": 58
+              }
+      415:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
                 }
