@@ -32,7 +32,7 @@ class UserView(APIView):
             first_name = request.data['first_name']
             last_name = request.data['last_name']
         except KeyError:
-            return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+            return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
         user.email = email
         user.first_name = first_name
@@ -40,7 +40,7 @@ class UserView(APIView):
         try:
             user.save()
         except DataError:
-            return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+            return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
         response = {
             'update_success': True,
