@@ -11,17 +11,13 @@ class QuestionnaireView(APIView):
         questionnaire = QuestionnaireSerializer(data=request.data)
         try:
             agreed = request.data['agreed']
-            if agreed == 'true':
-                agreed = True
-            else:
-                agreed = False
         except KeyError:
             agreed = False
 
         if not questionnaire.is_valid():
-            return Response('Wrong data format.', status=HTTP_400_BAD_REQUEST)
+            return Response({'error_message': 'Wrong data format.'}, status=HTTP_400_BAD_REQUEST)
         elif not agreed:
-            return Response('Not agreed to terms and conditions.', status=HTTP_400_BAD_REQUEST)
+            return Response({'error_message': 'Not agreed to terms and conditions.'}, status=HTTP_400_BAD_REQUEST)
 
         quest = questionnaire.create(questionnaire.data)
         return Response({'questionnaire_id': quest.id}, status=HTTP_201_CREATED)

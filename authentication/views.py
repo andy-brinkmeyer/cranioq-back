@@ -13,7 +13,7 @@ class LoginView(ObtainAuthToken):
                 'password': request.data['password']
             }
         except KeyError:
-            return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+            return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if user_data['username'] == '' or user_data['password'] == '':
             raise ValidationError({'error_message': 'One or more fields were left empty.'})
