@@ -38,5 +38,5 @@ DATABASES = {
 }
 ```
 
-Make sure to run the Django database migrations after setting up everything:
+Make sure you installed the `psycopg2` Python package and run the Django database migrations after setting up everything:
 `python manage.py migrate`
