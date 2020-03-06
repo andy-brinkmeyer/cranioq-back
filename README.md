@@ -23,7 +23,7 @@ We also need to create a new user, grant him permissions and set some standard p
 Note that you can choose your own name for the database and your own credentials for the user, just make sure to modify the `pg_settings.py` file.
 
 ### Setting up Django to work with PostgreSQL
-In the `cranioq_back module (where the `settings.py` file is located)`create a file called `pg_settings.py`. 
+In the `cranioq_back module` (where the `settings.py` file is located) create a file called `pg_settings.py`. 
 In this file add the following code:
 ```
 DATABASES = {
