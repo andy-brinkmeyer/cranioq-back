@@ -25,11 +25,18 @@ class QuestionnaireTemplate(models.Model):
 
 
 class QuestionTemplate(models.Model):
-    type = models.CharField(max_length=30)
+    type = models.ForeignKey('QuestionType', on_delete=models.PROTECT, )
     question = models.CharField(max_length=500)
-    text = models.TextField()
-    answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10)
+    description = models.TextField(blank=True)
+    answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
     templates = models.ManyToManyField('QuestionnaireTemplate')
 
     def __str__(self):
         return 'Question: {}'.format(self.question)
+
+
+class QuestionType(models.Model):
+    type = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.type
