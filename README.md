@@ -37,3 +37,6 @@ DATABASES = {
     }
 }
 ```
+
+Make sure to run the Django database migrations after setting up everything:
+`python manage.py migrate`
