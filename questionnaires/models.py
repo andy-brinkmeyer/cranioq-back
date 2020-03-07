@@ -17,15 +17,16 @@ class Questionnaire(models.Model):
 
 # models for questionnaire templating
 class QuestionnaireTemplate(models.Model):
-    title = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    version = models.CharField(max_length=20)
     description = models.TextField()
 
     def __str__(self):
-        return 'Questionnaire: {}'.format(self.title)
+        return 'Questionnaire: {} v{}'.format(self.name, self.version)
 
 
 class QuestionTemplate(models.Model):
-    type = models.ForeignKey('QuestionType', on_delete=models.PROTECT, )
+    type = models.ForeignKey('QuestionType', on_delete=models.PROTECT)
     question = models.CharField(max_length=500)
     description = models.TextField(blank=True)
     answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
