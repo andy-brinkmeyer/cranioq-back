@@ -20,6 +20,7 @@ class QuestionnaireTemplate(models.Model):
     name = models.CharField(max_length=200)
     version = models.CharField(max_length=20)
     description = models.TextField()
+    questions = models.ManyToManyField('QuestionTemplate')
 
     def __str__(self):
         return 'Questionnaire: {} v{}'.format(self.name, self.version)
@@ -30,7 +31,6 @@ class QuestionTemplate(models.Model):
     question = models.CharField(max_length=500)
     description = models.TextField(blank=True)
     answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
-    templates = models.ManyToManyField('QuestionnaireTemplate')
 
     def __str__(self):
         return 'Question: {}'.format(self.question)
