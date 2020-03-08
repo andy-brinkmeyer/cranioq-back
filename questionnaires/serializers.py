@@ -1,12 +1,6 @@
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import ModelSerializer, CharField, PrimaryKeyRelatedField
 
 from .models import Questionnaire, QuestionnaireTemplate, QuestionTemplate
-
-
-class QuestionnaireSerializer(ModelSerializer):
-    class Meta:
-        model = Questionnaire
-        fields = ['id', 'patient_id', 'email']
 
 
 class QuestionTemplateSerializer(ModelSerializer):
@@ -23,3 +17,11 @@ class QuestionnaireTemplateSerializer(ModelSerializer):
     class Meta:
         model = QuestionnaireTemplate
         fields = ['id', 'name', 'description', 'questions']
+
+
+class QuestionnaireSerializer(ModelSerializer):
+    template_id = PrimaryKeyRelatedField(queryset=QuestionnaireTemplate.objects.all())
+
+    class Meta:
+        model = Questionnaire
+        fields = ['id', 'patient_id', 'email', 'template_id']

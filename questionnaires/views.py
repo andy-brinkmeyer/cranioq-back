@@ -11,6 +11,7 @@ from .serializers import QuestionnaireSerializer, QuestionnaireTemplateSerialize
 class QuestionnaireView(APIView):
     @staticmethod
     def post(request):
+        request.data['template_id'] = 1
         questionnaire = QuestionnaireSerializer(data=request.data)
         try:
             agreed = request.data['agreed']
