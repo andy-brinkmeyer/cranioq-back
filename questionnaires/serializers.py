@@ -8,7 +8,7 @@ class QuestionTemplateSerializer(ModelSerializer):
 
     class Meta:
         model = QuestionTemplate
-        fields = ['type', 'question', 'description', 'answers']
+        fields = ['id', 'type', 'question', 'description', 'answers']
 
 
 class QuestionnaireTemplateSerializer(ModelSerializer):
