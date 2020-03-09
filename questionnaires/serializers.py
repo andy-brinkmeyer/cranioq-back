@@ -5,10 +5,11 @@ from .models import Questionnaire, QuestionnaireTemplate, QuestionTemplate
 
 class QuestionTemplateSerializer(ModelSerializer):
     type = CharField(source='type.type', read_only=True)
+    category = CharField(source='category.name', read_only=True)
 
     class Meta:
         model = QuestionTemplate
-        fields = ['id', 'type', 'question', 'description', 'answers']
+        fields = ['id', 'type', 'category', 'question', 'description', 'answers']
 
 
 class QuestionnaireTemplateSerializer(ModelSerializer):

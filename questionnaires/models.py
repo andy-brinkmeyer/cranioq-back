@@ -26,14 +26,12 @@ class QuestionnaireTemplate(models.Model):
         return 'Questionnaire: {} v{}'.format(self.name, self.version)
 
 
-class QuestionTemplate(models.Model):
-    type = models.ForeignKey('QuestionType', on_delete=models.PROTECT)
-    question = models.CharField(max_length=500)
-    description = models.TextField(blank=True)
-    answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
+class QuestionCategory(models.Model):
+    name = models.CharField(max_length=30)
+    description = models.TextField()
 
     def __str__(self):
-        return 'Question: {}'.format(self.question)
+        return self.name
 
 
 class QuestionType(models.Model):
@@ -41,3 +39,14 @@ class QuestionType(models.Model):
 
     def __str__(self):
         return self.type
+
+
+class QuestionTemplate(models.Model):
+    type = models.ForeignKey('QuestionType', on_delete=models.PROTECT)
+    question = models.CharField(max_length=500)
+    description = models.TextField(blank=True)
+    answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
+    category = models.ForeignKey('QuestionCategory', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return 'Question: {}'.format(self.question)
