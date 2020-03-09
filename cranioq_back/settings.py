@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-from .pg_settings import dev_database
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -118,6 +116,7 @@ if os.environ.get('PROD') == 'true':
         }
     }
 else:
+    from .pg_settings import dev_database
     DATABASES = dev_database
 
 # Password validation
