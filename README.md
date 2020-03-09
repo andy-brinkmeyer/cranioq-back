@@ -26,7 +26,7 @@ Note that you can choose your own name for the database and your own credentials
 In the `cranioq_back module` (where the `settings.py` file is located) create a file called `pg_settings.py`. 
 In this file add the following code:
 ```
-DATABASES = {
+dev_database = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'DATABASE_NAME',
