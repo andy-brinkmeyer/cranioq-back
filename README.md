@@ -4,7 +4,7 @@ Backend code for the CranioQ questionnaire application.
 # Dependencies
 ## Python Modules
 To install all required modules run 
-`python -m pip install django django-cors-headers djangorestframework markdown django-filter psycopg2 django-better-admin-arrayfield`
+`python -m pip install django django-cors-headers djangorestframework markdown django-filter psycopg2`
 
 ## Further Dependencies
 The application uses a `PostegreSQL` database.
