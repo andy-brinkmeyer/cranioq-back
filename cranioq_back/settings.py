@@ -12,11 +12,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-from .pg_settings import *
+from .pg_settings import dev_database
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -28,7 +27,6 @@ SECRET_KEY = 'ifvgh##5=c^t7vq9fbtxtcgkcl-ur_mc(hkg_4f0-)w&200rsi'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -105,10 +103,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cranioq_back.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 # database settings in pg_settings.py
+if os.environ.get('PROD') == 'true':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ.get('DATABASENAME', ''),
+            'USER': os.environ.get('DATABASEUSER', ''),
+            'PASSWORD': os.environ.get('DATABASEPASSWORD', ''),
+            'HOST': os.environ.get('DATABASEHOST', ''),
+            'PORT': '5432',
+        }
+    }
+else:
+    DATABASES = dev_database
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -128,7 +138,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -141,7 +150,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
