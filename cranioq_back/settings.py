@@ -29,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ifvgh##5=c^t7vq9fbtxtcgkcl-ur_mc(hkg_4f0-)w&200rsi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = PROD
+DEBUG = not PROD
 
 ALLOWED_HOSTS = ['*']
 
@@ -164,8 +164,8 @@ STATIC_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../stati
 STATIC_URL = '/static/'
 
 # Some production settings
-SESSION_COOKIE_SECURE = PROD
+SESSION_COOKIE_SECURE = not PROD
 
-CSRF_COOKIE_SECURE = PROD
+CSRF_COOKIE_SECURE = not PROD
 
 
