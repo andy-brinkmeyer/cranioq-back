@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+
+# Get if prod
+if os.environ.get('PROD') == 'true':
+    PROD = True
+else:
+    PROD = False
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ifvgh##5=c^t7vq9fbtxtcgkcl-ur_mc(hkg_4f0-)w&200rsi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = PROD
 
 ALLOWED_HOSTS = ['*']
 
@@ -104,7 +111,7 @@ WSGI_APPLICATION = 'cranioq_back.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 # database settings in pg_settings.py
-if os.environ.get('PROD') == 'true':
+if PROD:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -152,5 +159,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATIC_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../static')
 
 STATIC_URL = '/static/'
+
+# Some production settings
+SESSION_COOKIE_SECURE = PROD
+
+CSRF_COOKIE_SECURE = PROD
+
+
