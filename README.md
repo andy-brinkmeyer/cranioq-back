@@ -4,7 +4,7 @@ Backend code for the CranioQ questionnaire application.
 # Dependencies
 ## Python Modules
 To install all required modules run 
-`python -m pip install requirements.txt`
+`python -m pip install -r requirements.txt`
 
 ## Further Dependencies
 The application uses a `PostegreSQL` database.
