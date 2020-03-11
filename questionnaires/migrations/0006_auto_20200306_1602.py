@@ -3,6 +3,18 @@
 from django.db import migrations
 
 
+def insert_types(apps, schema_editor):
+    question_type = apps.get_model('questionnaires', 'QuestionType')
+    qt1 = question_type(type='radio')
+    qt2 = question_type(type='checkbox')
+    qt3 = question_type(type='free_text')
+    qt4 = question_type(type='bool')
+    qt1.save()
+    qt2.save()
+    qt3.save()
+    qt4.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -14,4 +26,5 @@ class Migration(migrations.Migration):
             old_name='QuestionTypes',
             new_name='QuestionType',
         ),
+        migrations.RunPython(insert_types),
     ]
