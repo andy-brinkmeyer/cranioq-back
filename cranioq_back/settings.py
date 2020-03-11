@@ -164,8 +164,8 @@ else:
 STATIC_URL = '/static/'
 
 # Some production settings
-SESSION_COOKIE_SECURE = not PROD
+SESSION_COOKIE_SECURE = PROD
 
-CSRF_COOKIE_SECURE = not PROD
+CSRF_COOKIE_SECURE = PROD
 
 
