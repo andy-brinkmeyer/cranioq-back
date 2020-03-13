@@ -8,8 +8,8 @@ import django.db.models.deletion
 def insert_roles(apps, schema_editor):
     role = apps.get_model('users', 'Role')
     role(role='gp').save()
-    role(role='specialist').save()
-    role(role='anon').save()
+    role(role='specialist').save(using=schema_editor.connection.alias)
+    role(role='anon').save(using=schema_editor.connection.alias)
 
 
 class Migration(migrations.Migration):

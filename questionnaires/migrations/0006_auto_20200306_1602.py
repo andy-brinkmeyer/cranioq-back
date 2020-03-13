@@ -9,10 +9,10 @@ def insert_types(apps, schema_editor):
     qt2 = question_type(type='checkbox')
     qt3 = question_type(type='free_text')
     qt4 = question_type(type='bool')
-    qt1.save()
-    qt2.save()
-    qt3.save()
-    qt4.save()
+    qt1.save(using=schema_editor.connection.alias)
+    qt2.save(using=schema_editor.connection.alias)
+    qt3.save(using=schema_editor.connection.alias)
+    qt4.save(using=schema_editor.connection.alias)
 
 
 class Migration(migrations.Migration):
