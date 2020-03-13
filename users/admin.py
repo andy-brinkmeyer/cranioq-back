@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from.models import GP, Specialist
+from.models import Profile
 
 
-admin.site.register(GP)
-admin.site.register(Specialist)
+admin.site.register(Profile)
+

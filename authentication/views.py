@@ -24,10 +24,8 @@ class LoginView(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
-        if hasattr(user, 'gp'):
-            role = 'gp'
-        elif hasattr(user, 'specialist'):
-            role = 'specialist'
+        if hasattr(user, 'profile'):
+            role = user.profile.role.role
         else:
             role = 'anon'
 

@@ -81,7 +81,20 @@ version: v0.1
                   "email": "john.doe@gmail.com",
                   "first_name": "John",
                   "last_name": "Doe",
-                  "role": "specialist"
+                  "role": "specialist",
+                  "clinic_name": "Great Ormond Street Hospital",
+                  "clinic_address": "Great Ormond Street",
+                  "clinic_postcode": "WC1N 3JH"
+                } |
+                {
+                  "id": 1,
+                  "email": "john.doe@gmail.com",
+                  "first_name": "John",
+                  "last_name": "Doe",
+                  "role": "gp",
+                  "clinic_name": "London GP Clinic",
+                  "clinic_address": "London Street",
+                  "clinic_postcode": "SW12 3ED"
                 }
         404:
           body:
@@ -99,7 +112,10 @@ version: v0.1
             {
               "email": "doe.john@gmail.com",
               "first_name": "John",
-              "last_name": "Doe"
+              "last_name": "Doe",
+              "clinic_name": "London GP Clinic",
+              "clinic_address": "London Street",
+              "clinic_postcode": "SW12 3ED"
             }
       responses:
         200:
@@ -107,7 +123,6 @@ version: v0.1
             application/json:
               example: |
                 {
-                  "update_success": true,
                   "displayable_message": "Details changed."
                 }
         404:

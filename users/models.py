@@ -2,18 +2,19 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# GP related data
-class GP(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    clinic = models.CharField(max_length=200)
+class Role(models.Model):
+    role = models.CharField(max_length=20)
 
     def __str__(self):
-        return 'GP Name: {}'.format(self.user.last_name)
+        return 'Role: {}'.format(self.role)
 
 
-# Specialist related data
-class Specialist(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.PROTECT)
+    clinic_name = models.CharField(max_length=100)
+    clinic_address = models.CharField(max_length=200, blank=True)
+    clinic_postcode = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
-        return 'GP Name: {} {}'.format(self.user.first_name, self.user.last_name)
+        return 'User: {}'.format(self.user.email)
