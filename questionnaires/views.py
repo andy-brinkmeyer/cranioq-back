@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import QuestionnaireTemplate
+from .models import QuestionnaireTemplate, Answer
 
 from .serializers import QuestionnaireSerializer, QuestionnaireTemplateSerializer
 
@@ -26,6 +26,28 @@ class QuestionnaireView(APIView):
 
         quest = questionnaire.create(questionnaire.data)
         return Response({'questionnaire_id': quest.id}, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def put(request):
+        try:
+            questionnaire_id = request.data['questionnaireID']
+            answers = request.data['answers']
+        except KeyError:
+            return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
+
+        if questionnaire_id < 0:
+            return Response('Invalid Questionnaire ID, ID must be greater than 0.', status.HTTP_400_BAD_REQUEST)
+
+        if type(answers) != dict:
+            return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
+
+        for key in answers:
+            current_answer = Answer.objects.filter(questionnaire=questionnaire_id, question=key)
+            if len(current_answer) != 0:
+                current_answer.delete()
+            answer = Answer(questionnaire_id=questionnaire_id, question_id=key, answer=answers[key])
+            answer.save()
+        return Response(status=status.HTTP_200_OK)
 
 
 class QuestionnaireTemplateView(APIView):
