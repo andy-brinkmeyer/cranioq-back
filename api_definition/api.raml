@@ -191,6 +191,28 @@ version: v0.1
                 }
 
   /templates:
+    get:
+      description: Get a list of all available questionnaire templates.
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                [
+                  {
+                    "id": 1,
+                    "name": "Main Template",
+                    "version": "1.3",
+                    "description": "This is the template used for the majority of craniofacial patients."
+                  },
+                  {
+                    "id": 2,
+                    "name": "Special Template",
+                    "version": "0.5",
+                    "description": "This is a special template used for special craniofacial patients."
+                  }
+                ]
+
     /{int:template_id}:
       get:
         description: Get a specific questionnaire template.

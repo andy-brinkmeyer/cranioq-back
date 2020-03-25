@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .models import QuestionnaireTemplate, Answer
 
-from .serializers import QuestionnaireSerializer, QuestionnaireTemplateSerializer
+from .serializers import QuestionnaireSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer
 
 
 class QuestionnaireView(APIView):
@@ -49,6 +49,14 @@ class QuestionnaireView(APIView):
             answer = Answer(questionnaire_id=questionnaire_id, question_id=key, answer=answers[key])
             answer.save()
         return Response(status=status.HTTP_200_OK)
+
+
+class QuestionnaireTemplatesView(APIView):
+    @staticmethod
+    def get(request):
+        templates = QuestionnaireTemplate.objects.all()
+        serialized_templates = TemplateInformationSerializer(templates, many=True)
+        return Response(serialized_templates.data, status=status.HTTP_200_OK)
 
 
 class QuestionnaireTemplateView(APIView):
