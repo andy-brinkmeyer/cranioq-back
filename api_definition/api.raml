@@ -1,6 +1,6 @@
 #%RAML 1.0
 ---
-title: CranioQ API
+title: CranioQ
 version: v0.1
 
 ######################
@@ -167,6 +167,28 @@ version: v0.1
                   {
                     "error_message": "Wrong data format."
                   }
+    put:
+      description: Save a questionnaire. The keys inside the answers object are the question IDs.
+      body:
+        application/json:
+          example:
+            {
+              "questionnaireID": 12,
+              "templateID": 2,
+              "answers": {
+                3: ["a", "c"],
+                5: ["This is an example."]
+              }
+            }
+      responses:
+        200:
+        400:
+          body:
+            application/json:
+              example:
+                {
+                  "error_message": "Invalid data format."
+                }
 
   /templates:
     /{int:template_id}:

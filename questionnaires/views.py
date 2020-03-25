@@ -33,10 +33,11 @@ class QuestionnaireView(APIView):
             questionnaire_id = request.data['questionnaireID']
             answers = request.data['answers']
         except KeyError:
-            return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
+            return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
         if questionnaire_id < 0:
-            return Response('Invalid Questionnaire ID, ID must be greater than 0.', status.HTTP_400_BAD_REQUEST)
+            return Response({'error_message': 'Invalid Questionnaire ID, ID must be greater than 0.'},
+                            status.HTTP_400_BAD_REQUEST)
 
         if type(answers) != dict:
             return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
