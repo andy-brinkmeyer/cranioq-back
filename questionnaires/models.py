@@ -3,10 +3,20 @@ from django.contrib.postgres import fields
 
 
 # questionnaire model
+class Answer(models.Model):
+    questionnaire = models.ForeignKey('Questionnaire', on_delete=models.CASCADE)
+    question = models.ForeignKey('QuestionTemplate', on_delete=models.PROTECT)
+    answer = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
+
+    def __str__(self):
+        return 'Answer: {}'.format(self.answer)
+
+
 class Questionnaire(models.Model):
     patient_id = models.CharField(max_length=100)
     email = models.EmailField(max_length=200)
     template = models.ForeignKey('QuestionnaireTemplate', on_delete=models.PROTECT)
+    completed = models.BooleanField()
 
     def __str__(self):
         return 'Questionnaire for: {}'.format(self.patient_id)
