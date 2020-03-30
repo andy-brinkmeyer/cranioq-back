@@ -16,7 +16,7 @@ class Questionnaire(models.Model):
     patient_id = models.CharField(max_length=100)
     email = models.EmailField(max_length=200)
     template = models.ForeignKey('QuestionnaireTemplate', on_delete=models.PROTECT)
-    completed = models.BooleanField()
+    completed = models.BooleanField(default=False)
 
     def __str__(self):
         return 'Questionnaire for: {}'.format(self.patient_id)
