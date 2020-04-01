@@ -20,7 +20,7 @@ class QuestionnaireTemplateSerializer(ModelSerializer):
         fields = ['id', 'name', 'description', 'questions']
 
 
-class QuestionnaireSerializer(ModelSerializer):
+class QuestionnairePostSerializer(ModelSerializer):
     template_id = PrimaryKeyRelatedField(queryset=QuestionnaireTemplate.objects.all())
 
     class Meta:
@@ -32,3 +32,11 @@ class TemplateInformationSerializer(ModelSerializer):
     class Meta:
         model = QuestionnaireTemplate
         fields = ['id', 'name', 'version', 'description']
+
+
+class QuestionnaireSerializer(ModelSerializer):
+    template = QuestionnaireTemplateSerializer(read_only=True)
+
+    class Meta:
+        model = Questionnaire
+        fields = ['id', 'patient_id', 'email', 'completed', 'template']

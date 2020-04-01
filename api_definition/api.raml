@@ -190,6 +190,46 @@ version: v0.1
                   "error_message": "Invalid data format."
                 }
 
+    /{int:questionnaire_id}:
+      get:
+        description: Fetch a questionnaire
+        responses:
+          200:
+            body:
+              application/json:
+                example:
+                  {
+                    "id": 5,
+                    "patient_id": "1456654ad8552",
+                    "email": "mail@mail.com",
+                    "completed": false,
+                    "template":
+                      {
+                        "id": 12,
+                        "name": "Cranio standard",
+                        "version": "1.3",
+                        "description": "This is the standard questionnaire for children with possible craniofacial conditions.",
+                        "questions": [
+                          {
+                            "id": 3,
+                            "type": "radio",
+                            "category": "Physical Examination",
+                            "question": "Have you observed any of the following?",
+                            "description": "You can select more than one answer.",
+                            "answers": ["changed behaviour", "loss of appetite", "skin irritations"]
+                          },
+                          {
+                            "id": 12,
+                            "type": "free_text",
+                            "category": "General",
+                            "question": "Is there anything else you noticed?",
+                            "description": "",
+                            "answers": []
+                          },
+                        ]
+                      }
+                  }
+
   /templates:
     get:
       description: Get a list of all available questionnaire templates.

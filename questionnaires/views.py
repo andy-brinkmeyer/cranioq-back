@@ -3,15 +3,28 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import QuestionnaireTemplate, Answer
+from .models import QuestionnaireTemplate, Answer, Questionnaire
 
-from .serializers import QuestionnaireSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer
+from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer, \
+    QuestionnaireSerializer
 
 
 class QuestionnaireView(APIView):
     @staticmethod
-    def post(request):
-        questionnaire = QuestionnaireSerializer(data=request.data)
+    def get(request, **kwargs):
+        if 'questionnaire_id' not in kwargs:
+            return Response({'error_message': 'No questionnaire ID provided.'}, status.HTTP_400_BAD_REQUEST)
+
+        try:
+            questionnaire = Questionnaire.objects.get(pk=kwargs['questionnaire_id'])
+        except ObjectDoesNotExist:
+            return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
+        questionnaire_serializer = QuestionnaireSerializer(questionnaire)
+        return Response(questionnaire_serializer.data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def post(request, **kwargs):
+        questionnaire = QuestionnairePostSerializer(data=request.data)
         try:
             agreed = request.data['agreed']
         except KeyError:
@@ -27,7 +40,7 @@ class QuestionnaireView(APIView):
         return Response({'questionnaire_id': quest.id}, status=status.HTTP_201_CREATED)
 
     @staticmethod
-    def put(request):
+    def put(request, **kwargs):
         try:
             questionnaire_id = request.data['questionnaireID']
             answers = request.data['answers']
