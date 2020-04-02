@@ -1,9 +1,16 @@
+import random
+import string
+
+from cranioq_back.global_variables import FRONT_END_ADDRESS
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
 
 from .models import QuestionnaireTemplate, Answer, Questionnaire
+from .email import ADDRESSES
 
 from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer, \
     QuestionnaireSerializer
@@ -24,7 +31,15 @@ class QuestionnaireView(APIView):
 
     @staticmethod
     def post(request, **kwargs):
-        questionnaire = QuestionnairePostSerializer(data=request.data)
+        questionnaire_data = request.data
+
+        # generate random access id
+        access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+        while len(Questionnaire.objects.filter(access_id=access_id)) > 0:
+            access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+        questionnaire_data['access_id'] = access_id
+
+        questionnaire = QuestionnairePostSerializer(data=questionnaire_data)
         try:
             agreed = request.data['agreed']
         except KeyError:
@@ -35,6 +50,11 @@ class QuestionnaireView(APIView):
         elif not agreed:
             return Response({'error_message': 'Not agreed to terms and conditions.'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+        # send email
+        mail_text = 'Dear Guardian, \n\n Please fill out the following questionnaire about your child: ' \
+                    '{}{} \n\n Best regards,\n Your CranioQ Team'.format(FRONT_END_ADDRESS, access_id)
+        send_mail('CranioQ Questionnaire Available', mail_text, ADDRESSES['info'], [questionnaire_data['email']])
 
         quest = questionnaire.create(questionnaire.data)
         return Response({'questionnaire_id': quest.id}, status=status.HTTP_201_CREATED)
@@ -81,3 +101,10 @@ class QuestionnaireTemplateView(APIView):
 
         template_serializer = QuestionnaireTemplateSerializer(template)
         return Response(template_serializer.data)
+
+
+class EmailTest(APIView):
+    @staticmethod
+    def get(request):
+        send_mail('Test Subject', 'This is the message.', ADDRESSES['info'], ['ucabrin@ucl.ac.uk'])
+        return Response('Done')

@@ -17,6 +17,7 @@ class Questionnaire(models.Model):
     email = models.EmailField(max_length=200)
     template = models.ForeignKey('QuestionnaireTemplate', on_delete=models.PROTECT)
     completed = models.BooleanField(default=False)
+    access_id = models.CharField(max_length=8)
 
     def __str__(self):
         return 'Questionnaire for: {}'.format(self.patient_id)

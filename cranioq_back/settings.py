@@ -141,6 +141,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email Settings
+if PROD:
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT = os.environ.get('EMAIL_PORT')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+else:
+    from cranioq_back.email_settings import EMAIL_HOST, EMAIL_PORT
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 

@@ -25,7 +25,7 @@ class QuestionnairePostSerializer(ModelSerializer):
 
     class Meta:
         model = Questionnaire
-        fields = ['id', 'patient_id', 'email', 'template_id']
+        fields = ['id', 'patient_id', 'email', 'template_id', 'access_id']
 
 
 class TemplateInformationSerializer(ModelSerializer):
