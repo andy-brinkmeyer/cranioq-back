@@ -23,7 +23,7 @@ class Questionnaire(models.Model):
         return 'Questionnaire for: {}'.format(self.patient_id)
 
     class Meta:
-        indexes = [models.Index(fields=('patient_id',))]
+        indexes = [models.Index(fields=('access_id',))]
 
 
 # models for questionnaire templating
