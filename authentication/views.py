@@ -1,8 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.views import ObtainAuthToken, APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.models import AnonymousUser
 
 
 class LoginView(ObtainAuthToken):
@@ -31,6 +32,23 @@ class LoginView(ObtainAuthToken):
 
         return Response({
             'token': token.key,
+            'id': user.pk,
+            'role': role
+        })
+
+
+class VerifyView(APIView):
+    @staticmethod
+    def get(request):
+        user = request.user
+        if user is AnonymousUser:
+            return Response({'error_message': 'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            if hasattr(user, 'profile'):
+                role = user.profile.role.role
+            else:
+                role = 'anon'
+        return Response({
             'id': user.pk,
             'role': role
         })
