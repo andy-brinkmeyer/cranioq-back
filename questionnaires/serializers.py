@@ -39,4 +39,4 @@ class QuestionnaireSerializer(ModelSerializer):
 
     class Meta:
         model = Questionnaire
-        fields = ['id', 'patient_id', 'email', 'completed', 'template']
+        fields = ['id', 'patient_id', 'access_id', 'email', 'completed', 'template']

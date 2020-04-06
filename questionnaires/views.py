@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import QuestionnaireTemplate, Answer, Questionnaire
 
@@ -13,6 +14,8 @@ from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSeria
 
 
 class QuestionnaireView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @staticmethod
     def get(request, **kwargs):
         if 'questionnaire_id' not in kwargs:
@@ -22,6 +25,7 @@ class QuestionnaireView(APIView):
             questionnaire = Questionnaire.objects.get(pk=kwargs['questionnaire_id'])
         except ObjectDoesNotExist:
             return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
+
         questionnaire_serializer = QuestionnaireSerializer(questionnaire)
         return Response(questionnaire_serializer.data, status=status.HTTP_200_OK)
 
@@ -74,7 +78,29 @@ class QuestionnaireView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class GuardianQuestionnaireView(APIView):
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def get(request, access_id):
+        try:
+            questionnaire = Questionnaire.objects.get(access_id=access_id)
+        except ObjectDoesNotExist:
+            return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
+
+        if questionnaire.completed:
+            return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
+
+        questionnaire_serializer = QuestionnaireSerializer(questionnaire)
+        questionnaire_data = questionnaire_serializer.data
+        del questionnaire_data['patient_id']
+        del questionnaire_data['email']
+        return Response(questionnaire_data, status=status.HTTP_200_OK)
+
+
 class QuestionnaireTemplatesView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @staticmethod
     def get(request):
         templates = QuestionnaireTemplate.objects.all()
