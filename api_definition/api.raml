@@ -36,36 +36,26 @@ version: v0.1
                   "error_message": "The email or password provided is incorrect"
                 }
 
-  /register:
-    post:
-      description: This enpoint creates a new GP account.
-      body:
-        application/json:
-          example: |
-            {
-              "email": "john.doe@gmail.com",
-              "password": "pass$w0rd",
-              "repeat_password": "pass$w0rd",
-              "first_name": "John",
-              "last_name": "Doe"
-            }
+  /verify:
+    get:
+      description: If the Authorization Header is set and contains a valid Token, the route will provide the user ID and role.
       responses:
         200:
           body:
             application/json:
-              example: |
+              example:
                 {
-                  "register_success": true,
-                  "displayable_message": "Successfully registered.",
-                  "error_message": ""
+                  "user_id": 5,
+                  "role": "gp"
                 }
-        400:
+        401:
           body:
             application/json:
-              example: |
+              example:
                 {
-                  "error_message": "Wrong data format."
+                  "error_message": "Invalid Token"
                 }
+
 
 /user:
   /{int:user_id}:
@@ -203,6 +193,44 @@ version: v0.1
                     "id": 5,
                     "patient_id": "1456654ad8552",
                     "email": "mail@mail.com",
+                    "completed": false,
+                    "template":
+                      {
+                        "id": 12,
+                        "name": "Cranio standard",
+                        "version": "1.3",
+                        "description": "This is the standard questionnaire for children with possible craniofacial conditions.",
+                        "questions": [
+                          {
+                            "id": 3,
+                            "type": "radio",
+                            "category": "Physical Examination",
+                            "question": "Have you observed any of the following?",
+                            "description": "You can select more than one answer.",
+                            "answers": ["changed behaviour", "loss of appetite", "skin irritations"]
+                          },
+                          {
+                            "id": 12,
+                            "type": "free_text",
+                            "category": "General",
+                            "question": "Is there anything else you noticed?",
+                            "description": "",
+                            "answers": []
+                          },
+                        ]
+                      }
+                  }
+
+    /{str:access_id}:
+      get:
+        description: Fetch a questionnaire
+        responses:
+          200:
+            body:
+              application/json:
+                example:
+                  {
+                    "id": 5,
                     "completed": false,
                     "template":
                       {

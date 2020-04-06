@@ -4,6 +4,7 @@ from rest_framework.authtoken.views import ObtainAuthToken, APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.models import AnonymousUser
+from rest_framework.permissions import AllowAny
 
 
 class LoginView(ObtainAuthToken):
@@ -38,6 +39,8 @@ class LoginView(ObtainAuthToken):
 
 
 class VerifyView(APIView):
+    permission_classes = [AllowAny]
+
     @staticmethod
     def get(request):
         user = request.user
