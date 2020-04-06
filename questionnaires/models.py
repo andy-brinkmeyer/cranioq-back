@@ -4,7 +4,7 @@ from django.contrib.postgres import fields
 
 # questionnaire model
 class Answer(models.Model):
-    questionnaire = models.ForeignKey('Questionnaire', on_delete=models.CASCADE)
+    questionnaire = models.ForeignKey('Questionnaire', related_name='answers', on_delete=models.CASCADE)
     question = models.ForeignKey('QuestionTemplate', on_delete=models.PROTECT)
     answer = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
 

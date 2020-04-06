@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, CharField, PrimaryKeyRelatedField
 
-from .models import Questionnaire, QuestionnaireTemplate, QuestionTemplate
+from .models import Questionnaire, QuestionnaireTemplate, QuestionTemplate, Answer
 
 
 class QuestionTemplateSerializer(ModelSerializer):
@@ -34,9 +34,18 @@ class TemplateInformationSerializer(ModelSerializer):
         fields = ['id', 'name', 'version', 'description']
 
 
+class AnswerSerializer(ModelSerializer):
+    question_id = PrimaryKeyRelatedField(queryset=QuestionTemplate.objects.all())
+
+    class Meta:
+        model = Answer
+        fields = ['question_id', 'answer']
+
+
 class QuestionnaireSerializer(ModelSerializer):
     template = QuestionnaireTemplateSerializer(read_only=True)
+    answers = AnswerSerializer(read_only=True, many=True)
 
     class Meta:
         model = Questionnaire
-        fields = ['id', 'patient_id', 'access_id', 'email', 'completed', 'template']
+        fields = ['id', 'patient_id', 'access_id', 'email', 'completed', 'template', 'answers']
