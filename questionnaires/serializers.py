@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer, CharField, PrimaryKeyRelatedField
 
+from django.contrib.auth import get_user_model
 from .models import Questionnaire, QuestionnaireTemplate, QuestionTemplate, Answer
 
 
@@ -22,10 +23,11 @@ class QuestionnaireTemplateSerializer(ModelSerializer):
 
 class QuestionnairePostSerializer(ModelSerializer):
     template_id = PrimaryKeyRelatedField(queryset=QuestionnaireTemplate.objects.all())
+    gp_id = PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
 
     class Meta:
         model = Questionnaire
-        fields = ['id', 'patient_id', 'email', 'template_id', 'access_id']
+        fields = ['id', 'patient_id', 'email', 'template_id', 'access_id', 'gp_id']
 
 
 class TemplateInformationSerializer(ModelSerializer):
@@ -48,4 +50,4 @@ class QuestionnaireSerializer(ModelSerializer):
 
     class Meta:
         model = Questionnaire
-        fields = ['id', 'patient_id', 'access_id', 'email', 'completed', 'template', 'answers']
+        fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed', 'template', 'answers']

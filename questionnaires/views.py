@@ -33,6 +33,16 @@ class QuestionnaireView(APIView):
     def post(request, **kwargs):
         questionnaire_data = request.data
 
+        # check if user is GP
+        try:
+            if request.user.profile.role.role != 'gp':
+                return Response({'error_message': 'Only GPs can create new questionnaires.'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+        except AttributeError:
+            return Response({'error_message': 'Only GPs can create new questionnaires.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        questionnaire_data['gp_id'] = request.user.id
+
         # generate random access id
         access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
         while len(Questionnaire.objects.filter(access_id=access_id)) > 0:

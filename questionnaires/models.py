@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres import fields
+from cranioq_back.settings import AUTH_USER_MODEL
 
 
 # questionnaire model
@@ -18,6 +19,7 @@ class Questionnaire(models.Model):
     template = models.ForeignKey('QuestionnaireTemplate', on_delete=models.PROTECT)
     completed = models.BooleanField(default=False)
     access_id = models.CharField(max_length=8)
+    gp = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.PROTECT)
 
     def __str__(self):
         return 'Questionnaire for: {}'.format(self.patient_id)
