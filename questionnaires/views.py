@@ -107,12 +107,33 @@ class QuestionnaireView(APIView):
         if type(answers) != dict:
             return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
 
-        for key in answers:
-            current_answer = Answer.objects.filter(questionnaire=questionnaire_id, question=key)
-            if len(current_answer) != 0:
-                current_answer.delete()
-            answer = Answer(questionnaire_id=questionnaire_id, question_id=key, answer=answers[key])
-            answer.save()
+        # get the users role
+        try:
+            role = request.user.profile.role.role
+        except AttributeError:
+            return Response({'error_message': 'Not authorized.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # get all the allowed questions
+        question_set = Questionnaire.objects.get(id=questionnaire_id).template.questions.all()
+        allowed_questions = {}
+        for question in question_set:
+            allowed_questions[question.id] = question
+
+        for question_id in answers:
+            if question_id not in allowed_questions:
+                return Response({'error_message': 'The answer with questionID {} is not part of this questionaire'
+                                .format(question_id)}, status=status.HTTP_400_BAD_REQUEST)
+            if allowed_questions[question_id].role != role:
+                return Response({'error_message': 'You do not have the permission to change some of the questions'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+            current_answer = Answer.objects.filter(questionnaire=questionnaire_id, question=question_id).first()
+            if current_answer is None:
+                answer = Answer(questionnaire_id=questionnaire_id, question_id=question_id, answer=answers[question_id])
+                answer.save()
+            else:
+                current_answer.answer = answers[question_id]
+                current_answer.save()
+
         return Response(status=status.HTTP_200_OK)
 
 
