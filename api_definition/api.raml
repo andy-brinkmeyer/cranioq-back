@@ -58,7 +58,9 @@ version: v0.1
 
 
 /user:
-  /{int:user_id}:
+  /{user_id}:
+    uriParameters:
+      user_id: integer
     get:
       description: Fetch the user data of a specific user. The role field can have the following values, "gp", "specialist" or "anon" for a user without a user group.
       responses:
@@ -131,6 +133,39 @@ version: v0.1
                 }
 
 /quests:
+  get:
+    description: Fetch a list of questionnaires. Each page contains 100 items. GPs will only fetch their own questionnaires.
+    queryParameters:
+      page: integer
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              [
+                {
+                  "id": 5,
+                  "patient_id": "1456654ad8552",
+                  "gp_id": 6,
+                  "access_id": "abcdefgh",
+                  "email": "mail@mail.com",
+                  "completed_gp": false,
+                  "completed_guardian": false,
+                  "created": "2020-04-08T13:43:19.977687Z",
+                  "review": [
+                    "WHO Chart"
+                  ]
+                },
+                ...
+              ]
+      401:
+        body:
+          application/json:
+            example:
+              {
+                "error_message": "Access denied."
+              }
+
   /quest:
     post:
       description: Add a new questionnaire.
@@ -181,7 +216,9 @@ version: v0.1
                   "error_message": "Invalid data format."
                 }
 
-    /{int:questionnaire_id}:
+    /{questionnaire_id}:
+      uriParameters:
+        questionnaire_id: integer
       get:
         description: Fetch a questionnaire
         responses:
@@ -192,8 +229,12 @@ version: v0.1
                   {
                     "id": 5,
                     "patient_id": "1456654ad8552",
+                    "gp_id": 6,
+                    "access_id": "abcdefgh",
                     "email": "mail@mail.com",
-                    "completed": false,
+                    "completed_gp": false,
+                    "completed_guardian": false,
+                    "created": "2020-04-08T13:43:19.977687Z",
                     "template":
                       {
                         "id": 12,
@@ -205,6 +246,7 @@ version: v0.1
                             "id": 3,
                             "type": "radio",
                             "category": "Physical Examination",
+                            "role": "gp",
                             "question": "Have you observed any of the following?",
                             "description": "You can select more than one answer.",
                             "answers": ["changed behaviour", "loss of appetite", "skin irritations"]
@@ -213,15 +255,29 @@ version: v0.1
                             "id": 12,
                             "type": "free_text",
                             "category": "General",
+                            "role": "guardian",
                             "question": "Is there anything else you noticed?",
                             "description": "",
                             "answers": []
                           },
                         ]
+                      },
+                    "answers": [
+                      {
+                        "question_id": 1,
+                        "answer": ["regularly"]
+                      },
+                      {
+                        "question_id": 4,
+                        "answer": ["a", "c"]
                       }
+                    ],
+                    "review": ["WHO Chart", "X-Ray"]
                   }
 
-    /{str:access_id}:
+    /{access_id}:
+      uriParameters:
+        access_id: string
       get:
         description: Fetch a questionnaire
         responses:
@@ -231,7 +287,11 @@ version: v0.1
                 example:
                   {
                     "id": 5,
-                    "completed": false,
+                    "gp_id": 6,
+                    "access_id": "abcdefgh",
+                    "completed_gp": false,
+                    "completed_guardian": false,
+                    "created": "2020-04-08T13:43:19.977687Z",
                     "template":
                       {
                         "id": 12,
@@ -243,6 +303,7 @@ version: v0.1
                             "id": 3,
                             "type": "radio",
                             "category": "Physical Examination",
+                            "role": "gp",
                             "question": "Have you observed any of the following?",
                             "description": "You can select more than one answer.",
                             "answers": ["changed behaviour", "loss of appetite", "skin irritations"]
@@ -251,12 +312,24 @@ version: v0.1
                             "id": 12,
                             "type": "free_text",
                             "category": "General",
+                            "role": "guardian",
                             "question": "Is there anything else you noticed?",
                             "description": "",
                             "answers": []
                           },
                         ]
+                      },
+                    "answers": [
+                      {
+                        "question_id": 1,
+                        "answer": ["regularly"]
+                      },
+                      {
+                        "question_id": 4,
+                        "answer": ["a", "c"]
                       }
+                    ],
+                    "review": ["WHO Chart", "X-Ray"]
                   }
 
   /templates:
@@ -282,7 +355,9 @@ version: v0.1
                   }
                 ]
 
-    /{int:template_id}:
+    /{template_id}:
+      uriParameters:
+        template_id: integer
       get:
         description: Get a specific questionnaire template.
         responses:

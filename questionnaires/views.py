@@ -10,7 +10,35 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import QuestionnaireTemplate, Answer, Questionnaire
 
 from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer, \
-    QuestionnaireSerializer
+    QuestionnaireSerializer, QuestionnaireListSerializer
+
+
+class QuestionnaireListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @staticmethod
+    def get(request):
+        try:
+            page = int(request.query_params['page'])
+        except (KeyError, ValueError):
+            page = 1
+        start = (page - 1) * 100
+        end = page*100
+
+        try:
+            role = request.user.profile.role.role
+        except AttributeError:
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if role == 'gp':
+            questionnaires = Questionnaire.objects.filter(gp=request.user).order_by('-created')[start:end]
+        elif role == 'specialist':
+            questionnaires = Questionnaire.objects.order_by('-created')[start:end]
+        else:
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = QuestionnaireListSerializer(questionnaires, many=True)
+        return Response(serializer.data)
 
 
 class QuestionnaireView(APIView):
@@ -32,6 +60,16 @@ class QuestionnaireView(APIView):
     @staticmethod
     def post(request, **kwargs):
         questionnaire_data = request.data
+
+        # check if user is GP
+        try:
+            if request.user.profile.role.role != 'gp':
+                return Response({'error_message': 'Only GPs can create new questionnaires.'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+        except AttributeError:
+            return Response({'error_message': 'Only GPs can create new questionnaires.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        questionnaire_data['gp_id'] = request.user.id
 
         # generate random access id
         access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
@@ -88,7 +126,7 @@ class GuardianQuestionnaireView(APIView):
         except ObjectDoesNotExist:
             return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
 
-        if questionnaire.completed:
+        if questionnaire.completed_guardian:
             return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
 
         questionnaire_serializer = QuestionnaireSerializer(questionnaire)

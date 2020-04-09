@@ -80,6 +80,8 @@ CORS_ALLOW_HEADERS = [
     'Authorization'
 ]
 
+AUTH_USER_MODEL = 'auth.User'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
