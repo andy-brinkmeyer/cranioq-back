@@ -63,6 +63,7 @@ class QuestionTemplate(models.Model):
     description = models.TextField(blank=True)
     answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
     category = models.ForeignKey('QuestionCategory', on_delete=models.PROTECT)
+    role = models.ForeignKey('users.Role', on_delete=models.PROTECT)
 
     def __str__(self):
         return 'Question: {}'.format(self.question)

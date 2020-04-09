@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, CharField, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer, CharField, PrimaryKeyRelatedField, SlugRelatedField
 
 from django.contrib.auth import get_user_model
 from .models import Questionnaire, QuestionnaireTemplate, QuestionTemplate, Answer
@@ -7,10 +7,11 @@ from .models import Questionnaire, QuestionnaireTemplate, QuestionTemplate, Answ
 class QuestionTemplateSerializer(ModelSerializer):
     type = CharField(source='type.type', read_only=True)
     category = CharField(source='category.name', read_only=True)
+    role = SlugRelatedField(read_only=True, slug_field='role')
 
     class Meta:
         model = QuestionTemplate
-        fields = ['id', 'type', 'category', 'question', 'description', 'answers']
+        fields = ['id', 'type', 'category', 'role', 'question', 'description', 'answers']
 
 
 class QuestionnaireTemplateSerializer(ModelSerializer):
@@ -50,12 +51,12 @@ class QuestionnaireSerializer(ModelSerializer):
 
     class Meta:
         model = Questionnaire
-        fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed_gp', 'completed_guardian', 'created',
-                  'template', 'answers', 'review']
+        fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed_gp', 'completed_guardian',
+                  'created', 'template', 'answers', 'review']
 
 
 class QuestionnaireListSerializer(ModelSerializer):
     class Meta:
         model = Questionnaire
-        fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed_gp', 'completed_guardian', 'created',
-                  'review']
+        fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed_gp', 'completed_guardian',
+                  'created', 'review']
