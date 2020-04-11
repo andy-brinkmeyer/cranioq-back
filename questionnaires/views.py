@@ -9,7 +9,6 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import QuestionnaireTemplate, Answer, Questionnaire
-from users.models import Role
 
 from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer, \
     QuestionnaireSerializer, QuestionnaireListSerializer, QuestionTemplateSerializer, AnswerSerializer
