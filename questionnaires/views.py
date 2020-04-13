@@ -5,12 +5,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import QuestionnaireTemplate, Answer, Questionnaire
 
 from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer, \
-    QuestionnaireSerializer, QuestionnaireListSerializer
+    QuestionnaireSerializer, QuestionnaireListSerializer, QuestionTemplateSerializer, AnswerSerializer
 
 
 class QuestionnaireListView(APIView):
@@ -54,8 +55,31 @@ class QuestionnaireView(APIView):
         except ObjectDoesNotExist:
             return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
 
-        questionnaire_serializer = QuestionnaireSerializer(questionnaire)
-        return Response(questionnaire_serializer.data, status=status.HTTP_200_OK)
+        try:
+            role = request.user.profile.role.role
+        except AttributeError:
+            return Response({'error_message': 'Not authorized. You either need to be a GP or Specialist.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        if role == 'specialist':
+            questions = questionnaire.template.questions.all()
+            answers = questionnaire.answers.all()
+        elif role == 'gp':
+            questions = questionnaire.template.questions.filter(role__role='gp').order_by('id')
+            answers = questionnaire.answers.filter(question__in=questions)
+        else:
+            return Response({'error_message': 'Not authorized. You either need to be a GP or Specialist.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        template_data = QuestionnaireTemplateSerializer(questionnaire.template).data
+        template_data['questions'] = QuestionTemplateSerializer(questions, many=True).data
+
+        answer_data = AnswerSerializer(answers, many=True).data
+
+        questionnaire_data = QuestionnaireSerializer(questionnaire).data
+        questionnaire_data['template'] = template_data
+        questionnaire_data['answers'] = answer_data
+        return Response(questionnaire_data, status=status.HTTP_200_OK)
 
     @staticmethod
     def post(request, **kwargs):
@@ -97,6 +121,7 @@ class QuestionnaireView(APIView):
         try:
             questionnaire_id = request.data['questionnaireID']
             answers = request.data['answers']
+            completed = request.data['completed']
         except KeyError:
             return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
@@ -104,15 +129,52 @@ class QuestionnaireView(APIView):
             return Response({'error_message': 'Invalid Questionnaire ID, ID must be greater than 0.'},
                             status.HTTP_400_BAD_REQUEST)
 
+        try:
+            questionnaire = Questionnaire.objects.get(id=questionnaire_id)
+        except ObjectDoesNotExist:
+            return Response({'error_message': 'This questionaire does not exist or is no longer valid.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if questionnaire.completed_gp:
+            return Response({'error_message': 'This questionnaire has already been submitted. No changes allowed.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
         if type(answers) != dict:
             return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
 
-        for key in answers:
-            current_answer = Answer.objects.filter(questionnaire=questionnaire_id, question=key)
-            if len(current_answer) != 0:
-                current_answer.delete()
-            answer = Answer(questionnaire_id=questionnaire_id, question_id=key, answer=answers[key])
-            answer.save()
+        # get the users role
+        try:
+            role = request.user.profile.role.role
+        except AttributeError:
+            return Response({'error_message': 'Not authorized.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # get all the allowed questions
+        question_set = questionnaire.template.questions.all()
+        allowed_questions = {}
+        for question in question_set:
+            allowed_questions[question.id] = question
+
+        for question_id in answers:
+            question_id = int(question_id)
+            if question_id not in allowed_questions:
+                return Response({'error_message': 'The answer with questionID {} is not part of this questionaire'
+                                .format(question_id)}, status=status.HTTP_400_BAD_REQUEST)
+            if allowed_questions[question_id].role.role != role:
+                return Response({'error_message': 'You do not have the permission to change some of the questions'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+            current_answer = Answer.objects.filter(questionnaire=questionnaire,
+                                                   question=allowed_questions[question_id]).first()
+            if current_answer is None:
+                answer = Answer(questionnaire=questionnaire, question=allowed_questions[question_id],
+                                answer=answers[str(question_id)])
+                answer.save()
+            else:
+                current_answer.answer = answers[str(question_id)]
+                current_answer.save()
+
+        questionnaire.completed_gp = completed
+        questionnaire.save()
+
         return Response(status=status.HTTP_200_OK)
 
 
@@ -121,6 +183,9 @@ class GuardianQuestionnaireView(APIView):
 
     @staticmethod
     def get(request, access_id):
+        if type(request.user) is not AnonymousUser:
+            return Response({'error_message': 'This route is for non-authenticated users only.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
         try:
             questionnaire = Questionnaire.objects.get(access_id=access_id)
         except ObjectDoesNotExist:
@@ -129,11 +194,73 @@ class GuardianQuestionnaireView(APIView):
         if questionnaire.completed_guardian:
             return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
 
-        questionnaire_serializer = QuestionnaireSerializer(questionnaire)
-        questionnaire_data = questionnaire_serializer.data
-        del questionnaire_data['patient_id']
-        del questionnaire_data['email']
+        questions = questionnaire.template.questions.filter(role__role='anon').order_by('id')
+        answers = questionnaire.answers.filter(question__in=questions)
+
+        template_data = QuestionnaireTemplateSerializer(questionnaire.template).data
+        template_data['questions'] = QuestionTemplateSerializer(questions, many=True).data
+
+        answer_data = AnswerSerializer(answers, many=True).data
+
+        questionnaire_data = QuestionnaireSerializer(questionnaire).data
+        questionnaire_data['template'] = template_data
+        questionnaire_data['answers'] = answer_data
         return Response(questionnaire_data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def put(request, access_id):
+        try:
+            questionnaire = Questionnaire.objects.get(access_id=access_id)
+        except ObjectDoesNotExist:
+            return Response({'error_message': 'This questionaire does not exist or is no longer valid.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if questionnaire.completed_guardian:
+            return Response({'error_message': 'This questionnaire has already been submitted. No changes allowed.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            answers = request.data['answers']
+            completed = request.data['completed']
+        except KeyError:
+            return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
+
+        if type(answers) != dict:
+            return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
+
+        # check if the user is anon
+        if type(request.user) is not AnonymousUser:
+            return Response({'error_message': 'This route is for non-authenticated users only.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        # get all the allowed questions
+        question_set = questionnaire.template.questions.all()
+        allowed_questions = {}
+        for question in question_set:
+            allowed_questions[question.id] = question
+
+        for question_id in answers:
+            question_id = int(question_id)
+            if question_id not in allowed_questions:
+                return Response({'error_message': 'The answer with questionID {} is not part of this questionaire'
+                                .format(question_id)}, status=status.HTTP_400_BAD_REQUEST)
+            if allowed_questions[question_id].role.role != 'anon':
+                return Response({'error_message': 'You do not have the permission to change some of the questions'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+            current_answer = Answer.objects.filter(questionnaire=questionnaire,
+                                                   question=allowed_questions[question_id]).first()
+            if current_answer is None:
+                answer = Answer(questionnaire=questionnaire, question=allowed_questions[question_id],
+                                answer=answers[str(question_id)])
+                answer.save()
+            else:
+                current_answer.answer = answers[str(question_id)]
+                current_answer.save()
+
+            questionnaire.completed_guardian = completed
+            questionnaire.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class QuestionnaireTemplatesView(APIView):

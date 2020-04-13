@@ -15,11 +15,9 @@ class QuestionTemplateSerializer(ModelSerializer):
 
 
 class QuestionnaireTemplateSerializer(ModelSerializer):
-    questions = QuestionTemplateSerializer(read_only=True, many=True)
-
     class Meta:
         model = QuestionnaireTemplate
-        fields = ['id', 'name', 'description', 'questions']
+        fields = ['id', 'name', 'description']
 
 
 class QuestionnairePostSerializer(ModelSerializer):
@@ -46,13 +44,10 @@ class AnswerSerializer(ModelSerializer):
 
 
 class QuestionnaireSerializer(ModelSerializer):
-    template = QuestionnaireTemplateSerializer(read_only=True)
-    answers = AnswerSerializer(read_only=True, many=True)
-
     class Meta:
         model = Questionnaire
         fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed_gp', 'completed_guardian',
-                  'created', 'template', 'answers', 'review']
+                  'created', 'review']
 
 
 class QuestionnaireListSerializer(ModelSerializer):
