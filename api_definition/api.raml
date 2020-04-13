@@ -274,6 +274,38 @@ version: v0.1
                     ],
                     "review": ["WHO Chart", "X-Ray"]
                   }
+      put:
+        description: Save answers to a questionnaire.
+        body:
+          application/json:
+            example:
+              {
+                "questionnaireID": 9,
+                "templateID": -1,
+                "accessID": "bjjsthvy",
+                "answers": {
+                  1: ["op"],
+                  2: ["b"],
+                  4: ["h"]
+                }
+              }
+        responses:
+          200:
+            description: Successfully added the answers.
+          400:
+            body:
+              application/json:
+                example:
+                  {
+                    "error_message": "Invalid data format."
+                  }
+          401:
+            body:
+              application/json:
+                example:
+                  {
+                    "error_message": "Not authorized."
+                  }
 
     /{access_id}:
       uriParameters:
@@ -330,6 +362,38 @@ version: v0.1
                       }
                     ],
                     "review": ["WHO Chart", "X-Ray"]
+                  }
+      put:
+        description: Save answers to a questionnaire.
+        body:
+          application/json:
+            example:
+              {
+                "questionnaireID": 9,
+                "templateID": -1,
+                "accessID": "bjjsthvy",
+                "answers": {
+                  1: ["op"],
+                  2: ["b"],
+                  4: ["h"]
+                }
+              }
+        responses:
+          200:
+            description: Successfully added the answers.
+          400:
+            body:
+              application/json:
+                example:
+                  {
+                    "error_message": "Invalid data format."
+                  }
+          401:
+            body:
+              application/json:
+                example:
+                  {
+                    "error_message": "This route is for non-authenticated users only."
                   }
 
   /templates:
