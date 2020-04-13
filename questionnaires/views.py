@@ -121,6 +121,7 @@ class QuestionnaireView(APIView):
         try:
             questionnaire_id = request.data['questionnaireID']
             answers = request.data['answers']
+            completed = request.data['completed']
         except KeyError:
             return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
@@ -133,6 +134,10 @@ class QuestionnaireView(APIView):
         except ObjectDoesNotExist:
             return Response({'error_message': 'This questionaire does not exist or is no longer valid.'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+        if questionnaire.completed_gp:
+            return Response({'error_message': 'This questionnaire has already been submitted. No changes allowed.'},
+                            status=status.HTTP_403_FORBIDDEN)
 
         if type(answers) != dict:
             return Response('Invalid data format.', status.HTTP_400_BAD_REQUEST)
@@ -166,6 +171,9 @@ class QuestionnaireView(APIView):
             else:
                 current_answer.answer = answers[str(question_id)]
                 current_answer.save()
+
+        questionnaire.completed_gp = completed
+        questionnaire.save()
 
         return Response(status=status.HTTP_200_OK)
 
@@ -207,8 +215,13 @@ class GuardianQuestionnaireView(APIView):
             return Response({'error_message': 'This questionaire does not exist or is no longer valid.'},
                             status=status.HTTP_400_BAD_REQUEST)
 
+        if questionnaire.completed_guardian:
+            return Response({'error_message': 'This questionnaire has already been submitted. No changes allowed.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
         try:
             answers = request.data['answers']
+            completed = request.data['completed']
         except KeyError:
             return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
@@ -243,6 +256,9 @@ class GuardianQuestionnaireView(APIView):
             else:
                 current_answer.answer = answers[str(question_id)]
                 current_answer.save()
+
+            questionnaire.completed_guardian = completed
+            questionnaire.save()
 
         return Response(status=status.HTTP_200_OK)
 
