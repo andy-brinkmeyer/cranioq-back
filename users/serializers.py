@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -10,5 +10,5 @@ class UserSerializer(serializers.ModelSerializer):
     clinic_postcode = serializers.CharField(source='profile.clinic_postcode', read_only=True)
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ['id', 'email', 'first_name', 'last_name', 'role', 'clinic_name', 'clinic_address', 'clinic_postcode']
