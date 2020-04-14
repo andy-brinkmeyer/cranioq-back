@@ -283,3 +283,24 @@ class QuestionnaireTemplateView(APIView):
 
         template_serializer = QuestionnaireTemplateSerializer(template)
         return Response(template_serializer.data)
+
+class NotificationsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @staticmethod
+    def get(request):
+
+        try:
+            role = request.user.profile.role.role
+        except AttributeError:
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if role == 'gp':
+            questionnaires = Questionnaire.objects.filter(gp=request.user).order_by('-created')[start:end]
+        elif role == 'specialist':
+            questionnaires = Questionnaire.objects.order_by('-created')[start:end]
+        else:
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = QuestionnaireListSerializer(questionnaires, many=True)
+        return Response(serializer.data)
