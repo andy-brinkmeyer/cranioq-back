@@ -332,6 +332,7 @@ pre code {
   "questionnaireID": 9,
   "templateID": -1,
   "accessID": "bjjsthvy",
+  "completed": true,
   "answers": {
     "1": [
       "op"
@@ -347,6 +348,15 @@ pre code {
   "error_message": "Invalid data format."
 }</code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "error_message": "Not authorized."
+}</code></pre></div></div></div></div></div></div></div></div><div class="panel panel-white resource-modal"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_quests_quest__questionnaire_id__review"><span class="parent">/quests/quest/{questionnaire_id}</span>/review</a> <span class="methods"><a href="#quests_quest__questionnaire_id__review_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel_quests_quest__questionnaire_id__review" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Add a review to a questionnaire.</p></div><div class="list-group"><div onclick="window.location.href = '#quests_quest__questionnaire_id__review_post'" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="quests_quest__questionnaire_id__review_post"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post</span> <span class="parent">/quests/quest/{questionnaire_id}</span>/review</h4></div><div class="modal-body"><ul class="nav nav-tabs"><li class="active"><a href="#quests_quest__questionnaire_id__review_post_request" data-toggle="tab">Request</a></li><li><a href="#quests_quest__questionnaire_id__review_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="quests_quest__questionnaire_id__review_post_request"><h3>URI Parameters</h3><ul><li><strong>questionnaire_id</strong>: <em><span class="required">required</span>(integer)</em></li></ul><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
+  "review": [
+    "WHOChart",
+    "photos"
+  ]
+}</code></pre></div></div><div class="tab-pane" id="quests_quest__questionnaire_id__review_post_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
+  "error_message": "Invalid data format."
+}</code></pre></div><h2>HTTP status code <a href="http://httpstatus.es/403" target="_blank">403</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
+  "error_message": "No permissions to perfrom this request."
 }</code></pre></div></div></div></div></div></div></div></div><div class="panel panel-white resource-modal"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_quests_quest__access_id_"><span class="parent">/quests/quest</span>/{access_id}</a> <span class="methods"><a href="#quests_quest__access_id__get"><span class="badge badge_get">get</span></a> <a href="#quests_quest__access_id__put"><span class="badge badge_put">put</span></a></span></h4></div><div id="panel_quests_quest__access_id_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#quests_quest__access_id__get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Fetch a questionnaire</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#quests_quest__access_id__put'" class="list-group-item"><span class="badge badge_put">put</span><div class="method_description"><p>Save answers to a questionnaire.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="quests_quest__access_id__get"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/quests/quest</span>/{access_id}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Fetch a questionnaire</p></div><ul class="nav nav-tabs"><li class="active"><a href="#quests_quest__access_id__get_request" data-toggle="tab">Request</a></li><li><a href="#quests_quest__access_id__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="quests_quest__access_id__get_request"><h3>URI Parameters</h3><ul><li><strong>access_id</strong>: <em><span class="required">required</span>(string)</em></li></ul></div><div class="tab-pane" id="quests_quest__access_id__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Media type</strong>: application/json</p><p><strong>Type</strong>: any</p><p><strong>Example</strong>:</p><div class="examples"><pre><code>{
   "id": 5,
   "gp_id": 6,
@@ -407,6 +417,7 @@ pre code {
   "questionnaireID": 9,
   "templateID": -1,
   "accessID": "bjjsthvy",
+  "completed": true,
   "answers": {
     "1": [
       "op"
