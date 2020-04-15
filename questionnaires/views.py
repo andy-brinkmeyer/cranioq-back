@@ -317,3 +317,25 @@ class ReviewView(APIView):
         questionnaire.save()
 
         return Response(status=status.HTTP_200_OK)
+
+
+class NotificationsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @staticmethod
+    def get(request):
+
+        try:
+            role = request.user.profile.role.role
+        except AttributeError:
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if role == 'gp':
+            questionnaires = Questionnaire.objects.filter(gp=request.user, completed_gp=True, completed_guardian=True).exclude (review__len=0).order_by('-created')
+        elif role == 'specialist':
+            questionnaires = Questionnaire.objects.filter(completed_gp=True, completed_guardian=True, review__len=0).order_by('-created')
+        else:
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = QuestionnaireListSerializer(questionnaires, many=True)
+        return Response(serializer.data)
