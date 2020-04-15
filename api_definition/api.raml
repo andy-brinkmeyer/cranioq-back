@@ -308,6 +308,33 @@ version: v0.1
                     "error_message": "Not authorized."
                   }
 
+      /review:
+        description: Add a review to a questionnaire.
+        post:
+          body:
+            application/json:
+              example:
+                {
+                  "review": ["WHOChart", "photos"]
+                }
+          responses:
+            200:
+            400:
+              body:
+                application/json:
+                  example:
+                    {
+                      "error_message": "Invalid data format."
+                    }
+            403:
+              body:
+                application/json:
+                  example:
+                    {
+                      "error_message": "No permissions to perfrom this request."
+                    }
+
+
     /{access_id}:
       uriParameters:
         access_id: string
