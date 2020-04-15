@@ -331,8 +331,8 @@ class NotificationsView(APIView):
             return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         if role == 'gp':
-            questionnaires = Questionnaire.objects.filter(gp=request.user, completed_gp=True, completed_guardian=True)\
-                .exclude(review__len=0).order_by('-created')
+            questionnaires = Questionnaire.objects.filter(gp=request.user, completed_gp=True, completed_guardian=True,\
+                dismiss_notification=False).exclude(review__len=0).order_by('-created')
         elif role == 'specialist':
             questionnaires = Questionnaire.objects.filter(completed_gp=True, completed_guardian=True, review__len=0)\
                 .order_by('-created')
@@ -341,3 +341,22 @@ class NotificationsView(APIView):
 
         serializer = QuestionnaireListSerializer(questionnaires, many=True)
         return Response(serializer.data)
+    
+    @staticmethod
+    def put(request, questionnaire_id): #error checking and security!! Check this is correct!
+        try:
+            questionnaire = Questionnaire.objects.get(id=questionnaire_id)
+        except ObjectDoesNotExist:
+            return Response({'error_message': 'This questionaire does not exist or is no longer valid.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            dismiss = request.data['dismiss']
+        except KeyError:
+            return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
+        
+        questionnaire.dismiss_notification = dismiss
+        questionnaire.save()
+            
+        return Response(status=status.HTTP_200_OK)
+

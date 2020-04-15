@@ -19,6 +19,7 @@ class Questionnaire(models.Model):
     template = models.ForeignKey('QuestionnaireTemplate', on_delete=models.PROTECT)
     completed_gp = models.BooleanField(default=False)
     completed_guardian = models.BooleanField(default=False)
+    dismiss_notification = models.BooleanField(default=False)
     access_id = models.CharField(max_length=8)
     gp = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.PROTECT)
     review = fields.ArrayField(base_field=models.CharField(max_length=200), size=5, blank=True, default=list)
