@@ -283,3 +283,37 @@ class QuestionnaireTemplateView(APIView):
 
         template_serializer = QuestionnaireTemplateSerializer(template)
         return Response(template_serializer.data)
+
+
+class ReviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @staticmethod
+    def post(request, questionnaire_id):
+        try:
+            role = request.user.profile.role.role
+        except AttributeError:
+            return Response({'error_message': 'No permissions to perfrom this request.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        if role != 'specialist':
+            return Response({'error_message': 'No permissions to perfrom this request.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            review = request.data['review']
+        except KeyError:
+            return Response({'error_message': 'Invalid data format.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if type(review) is not list:
+            return Response({'error_message': 'Invalid data format.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            questionnaire = Questionnaire.objects.get(id=questionnaire_id)
+        except ObjectDoesNotExist:
+            return Response({'error_message': 'The questionnaire does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        questionnaire.review = review
+        questionnaire.save()
+
+        return Response(status=status.HTTP_200_OK)
