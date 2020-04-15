@@ -4,4 +4,4 @@ my.cnf
 __pycache__
 cranioq_back/pg_settings.py
 .vscode
-*.DS_Store
+**/.DS_Store
