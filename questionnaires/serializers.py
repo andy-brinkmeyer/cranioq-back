@@ -63,3 +63,9 @@ class QuestionnaireListSerializer(ModelSerializer):
         model = Questionnaire
         fields = ['id', 'patient_id', 'gp', 'access_id', 'email', 'completed_gp', 'completed_guardian',
                   'created', 'review']
+        
+class NotificationsSerializer(ModelSerializer):
+
+    class Meta:
+        model = Questionnaire
+        fields = ['id']

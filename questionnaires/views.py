@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import QuestionnaireTemplate, Answer, Questionnaire
 
 from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer, \
-    QuestionnaireSerializer, QuestionnaireListSerializer, QuestionTemplateSerializer, AnswerSerializer
+    QuestionnaireSerializer, QuestionnaireListSerializer, QuestionTemplateSerializer, AnswerSerializer, NotificationsSerializer
 
 
 class QuestionnaireListView(APIView):
@@ -329,7 +329,7 @@ class NotificationsView(APIView):
         try:
             role = request.user.profile.role.role
         except AttributeError:
-            return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
         if role == 'gp':
             questionnaires = Questionnaire.objects.filter(gp=request.user, completed_gp=True, completed_guardian=True,\
@@ -338,23 +338,22 @@ class NotificationsView(APIView):
             questionnaires = Questionnaire.objects.filter(completed_gp=True, completed_guardian=True, review__len=0)\
                 .order_by('-created')
         else:
-            return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
-        serializer = QuestionnaireListSerializer(questionnaires, many=True)
+        serializer = NotificationsSerializer(questionnaires, many=True)
         return Response(serializer.data)
     
     @staticmethod
-    def put(request, questionnaire_id): #error checking and security!! Check this is correct!
+    def put(request, questionnaire_id):
         try:
             questionnaire = Questionnaire.objects.get(id=questionnaire_id)
         except ObjectDoesNotExist:
-            return Response({'error_message': 'This questionaire does not exist or is no longer valid.'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
             
         try:
             dismiss = request.data['dismiss']
         except KeyError:
-            return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         
         questionnaire.dismiss_notification = dismiss
         questionnaire.save()
