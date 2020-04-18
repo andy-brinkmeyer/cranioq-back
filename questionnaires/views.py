@@ -104,7 +104,7 @@ class QuestionnaireView(APIView):
         questionnaire = QuestionnairePostSerializer(data=questionnaire_data)
         try:
             agreed = request.data['agreed']
-        except KeyError:
+        except (KeyError, TypeError):
             agreed = False
 
         if not questionnaire.is_valid():
@@ -122,7 +122,7 @@ class QuestionnaireView(APIView):
             questionnaire_id = request.data['questionnaireID']
             answers = request.data['answers']
             completed = request.data['completed']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
         if questionnaire_id < 0:
@@ -222,7 +222,7 @@ class GuardianQuestionnaireView(APIView):
         try:
             answers = request.data['answers']
             completed = request.data['completed']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
         if type(answers) != dict:
@@ -302,7 +302,7 @@ class ReviewView(APIView):
 
         try:
             review = request.data['review']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Invalid data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if type(review) is not list:
