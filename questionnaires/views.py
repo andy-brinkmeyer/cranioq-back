@@ -29,7 +29,8 @@ class QuestionnaireListView(APIView):
         try:
             role = request.user.profile.role.role
         except AttributeError:
-            return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
+            role = 'specialist'
+            # return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
 
         if role == 'gp':
             questionnaires = Questionnaire.objects.filter(gp=request.user).order_by('-created')[start:end]
