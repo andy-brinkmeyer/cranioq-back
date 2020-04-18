@@ -352,7 +352,7 @@ class NotificationsView(APIView):
             
         try:
             dismiss = request.data['dismiss']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
         questionnaire.dismiss_notification = dismiss
