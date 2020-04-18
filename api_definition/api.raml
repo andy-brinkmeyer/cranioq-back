@@ -56,6 +56,34 @@ version: v0.1
                   "error_message": "Invalid Token"
                 }
 
+  /change-password:
+    post:
+      description: Change the password of the logged-in user. The password must be at least 8 characters long and contain at least one number.
+      body:
+        application/json:
+          example:
+            {
+              "oldPassword": "test12345678",
+              "newPassword": "asdfg1hj",
+              "repeatNewPassword": "asdfg1hj"
+            }
+      responses:
+        200:
+        400:
+          body:
+            application/json:
+              example:
+                {
+                  "error_message": "Passwords do not match."
+                }
+        401:
+          body:
+            application/json:
+              example:
+                {
+                  "error_message": "Wrong password."
+                }
+
 
 /user:
   /{user_id}:
