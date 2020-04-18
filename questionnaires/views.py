@@ -29,14 +29,15 @@ class QuestionnaireListView(APIView):
         try:
             role = request.user.profile.role.role
         except AttributeError:
-            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+            role = 'specialist'
+            # return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
 
         if role == 'gp':
             questionnaires = Questionnaire.objects.filter(gp=request.user).order_by('-created')[start:end]
         elif role == 'specialist':
             questionnaires = Questionnaire.objects.order_by('-created')[start:end]
         else:
-            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = QuestionnaireListSerializer(questionnaires, many=True)
         return Response(serializer.data)
@@ -69,7 +70,7 @@ class QuestionnaireView(APIView):
             answers = questionnaire.answers.filter(question__in=questions)
         else:
             return Response({'error_message': 'Not authorized. You either need to be a GP or Specialist.'},
-                            status=status.HTTP_401_UNAUTHORIZED)
+                            status=status.HTTP_403_FORBIDDEN)
 
         template_data = QuestionnaireTemplateSerializer(questionnaire.template).data
         template_data['questions'] = QuestionTemplateSerializer(questions, many=True).data
@@ -89,22 +90,22 @@ class QuestionnaireView(APIView):
         try:
             if request.user.profile.role.role != 'gp':
                 return Response({'error_message': 'Only GPs can create new questionnaires.'},
-                                status=status.HTTP_401_UNAUTHORIZED)
+                                status=status.HTTP_403_FORBIDDEN)
         except AttributeError:
             return Response({'error_message': 'Only GPs can create new questionnaires.'},
-                            status=status.HTTP_401_UNAUTHORIZED)
+                            status=status.HTTP_403_FORBIDDEN)
         questionnaire_data['gp_id'] = request.user.id
 
         # generate random access id
-        access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+        access_id = ''.join(random.choice(string.ascii_uppercase) for _ in range(8))
         while len(Questionnaire.objects.filter(access_id=access_id)) > 0:
-            access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+            access_id = ''.join(random.choice(string.ascii_uppercase) for _ in range(8))
         questionnaire_data['access_id'] = access_id
 
         questionnaire = QuestionnairePostSerializer(data=questionnaire_data)
         try:
             agreed = request.data['agreed']
-        except KeyError:
+        except (KeyError, TypeError):
             agreed = False
 
         if not questionnaire.is_valid():
@@ -122,7 +123,7 @@ class QuestionnaireView(APIView):
             questionnaire_id = request.data['questionnaireID']
             answers = request.data['answers']
             completed = request.data['completed']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
         if questionnaire_id < 0:
@@ -146,7 +147,7 @@ class QuestionnaireView(APIView):
         try:
             role = request.user.profile.role.role
         except AttributeError:
-            return Response({'error_message': 'Not authorized.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error_message': 'Not authorized.'}, status=status.HTTP_403_FORBIDDEN)
 
         # get all the allowed questions
         question_set = questionnaire.template.questions.all()
@@ -222,7 +223,7 @@ class GuardianQuestionnaireView(APIView):
         try:
             answers = request.data['answers']
             completed = request.data['completed']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Invalid data format.'}, status.HTTP_400_BAD_REQUEST)
 
         if type(answers) != dict:
@@ -231,7 +232,7 @@ class GuardianQuestionnaireView(APIView):
         # check if the user is anon
         if type(request.user) is not AnonymousUser:
             return Response({'error_message': 'This route is for non-authenticated users only.'},
-                            status=status.HTTP_401_UNAUTHORIZED)
+                            status=status.HTTP_403_FORBIDDEN)
 
         # get all the allowed questions
         question_set = questionnaire.template.questions.all()
@@ -246,7 +247,7 @@ class GuardianQuestionnaireView(APIView):
                                 .format(question_id)}, status=status.HTTP_400_BAD_REQUEST)
             if allowed_questions[question_id].role.role != 'anon':
                 return Response({'error_message': 'You do not have the permission to change some of the questions'},
-                                status=status.HTTP_401_UNAUTHORIZED)
+                                status=status.HTTP_403_FORBIDDEN)
             current_answer = Answer.objects.filter(questionnaire=questionnaire,
                                                    question=allowed_questions[question_id]).first()
             if current_answer is None:
@@ -302,7 +303,7 @@ class ReviewView(APIView):
 
         try:
             review = request.data['review']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Invalid data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if type(review) is not list:
@@ -328,7 +329,7 @@ class NotificationsView(APIView):
         try:
             role = request.user.profile.role.role
         except AttributeError:
-            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
 
         if role == 'gp':
             questionnaires = Questionnaire.objects.filter(gp=request.user, completed_gp=True, completed_guardian=True,\
@@ -337,7 +338,7 @@ class NotificationsView(APIView):
             questionnaires = Questionnaire.objects.filter(completed_gp=True, completed_guardian=True, review__len=0)\
                 .order_by('-created')
         else:
-            return Response({'error_message': 'Access denied.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = QuestionnaireListSerializer(questionnaires, many=True)
         return Response(serializer.data)

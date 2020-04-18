@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,6 +11,8 @@ from .serializers import UserSerializer
 
 
 class UserView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @staticmethod
     def get(request, user_id):
         try:
@@ -34,7 +37,7 @@ class UserView(APIView):
             clinic_name = request.data['clinic_name']
             clinic_address = request.data['clinic_address']
             clinic_postcode = request.data['clinic_postcode']
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
         user.email = email

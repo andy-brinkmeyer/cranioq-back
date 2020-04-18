@@ -15,7 +15,7 @@ version: v0.1
         application/json:
           example: |
             {
-              "email": "john.doe@gmail.com",
+              "username": "johndoe",
               "password": "pass$w0rd"
             }
       responses:
@@ -146,7 +146,11 @@ version: v0.1
                 {
                   "id": 5,
                   "patient_id": "1456654ad8552",
-                  "gp_id": 6,
+                  "gp": {
+                    "id": 2,
+                    "first_name": "John",
+                    "last_name": "Doe"
+                  },
                   "access_id": "abcdefgh",
                   "email": "mail@mail.com",
                   "completed_gp": false,
@@ -158,7 +162,7 @@ version: v0.1
                 },
                 ...
               ]
-      401:
+      403:
         body:
           application/json:
             example:
@@ -187,12 +191,20 @@ version: v0.1
                   "access_id": "abcdefgh"
                 }
         400:
-            body:
-              application/json:
-                example: |
-                  {
-                    "error_message": "Wrong data format."
-                  }
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "Wrong data format."
+                }
+        403:
+          body:
+            application/json:
+              example:
+                {
+                  "error_message": "Only GPs can create new questionnaires."
+                }
+
     put:
       description: Save a questionnaire. The keys inside the answers object are the question IDs.
       body:
@@ -214,6 +226,13 @@ version: v0.1
               example:
                 {
                   "error_message": "Invalid data format."
+                }
+        403:
+          body:
+            application/json:
+              example:
+                {
+                  "error_message": "Not authorized."
                 }
 
     /{questionnaire_id}:
@@ -273,6 +292,13 @@ version: v0.1
                       }
                     ],
                     "review": ["WHO Chart", "X-Ray"]
+                  }
+          403:
+            body:
+              application/json:
+                example:
+                  {
+                    "error_message": "Not authorized. You either need to be a GP or Specialist."
                   }
       put:
         description: Save answers to a questionnaire.
@@ -390,6 +416,13 @@ version: v0.1
                       }
                     ],
                     "review": ["WHO Chart", "X-Ray"]
+                  }
+          403:
+            body:
+              application/json:
+                example:
+                  {
+                    "error_message": "Not authorized. This route is for guardians only."
                   }
       put:
         description: Save answers to a questionnaire.

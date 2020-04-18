@@ -11,10 +11,10 @@ class LoginView(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         try:
             user_data = {
-                'username': request.data['email'],
+                'username': request.data['username'],
                 'password': request.data['password']
             }
-        except KeyError:
+        except (KeyError, TypeError):
             return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if user_data['username'] == '' or user_data['password'] == '':
@@ -22,7 +22,7 @@ class LoginView(ObtainAuthToken):
         serializer = self.serializer_class(data=user_data,
                                            context={'request': request})
         if not serializer.is_valid():
-            raise ValidationError({'error_message': 'The email or password provided is incorrect.'})
+            raise ValidationError({'error_message': 'The username or password provided is incorrect.'})
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
