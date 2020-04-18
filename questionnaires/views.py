@@ -96,9 +96,9 @@ class QuestionnaireView(APIView):
         questionnaire_data['gp_id'] = request.user.id
 
         # generate random access id
-        access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+        access_id = ''.join(random.choice(string.ascii_uppercase) for _ in range(8))
         while len(Questionnaire.objects.filter(access_id=access_id)) > 0:
-            access_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+            access_id = ''.join(random.choice(string.ascii_uppercase) for _ in range(8))
         questionnaire_data['access_id'] = access_id
 
         questionnaire = QuestionnairePostSerializer(data=questionnaire_data)
