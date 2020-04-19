@@ -332,8 +332,9 @@ class NotificationsView(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         if role == 'gp':
-            questionnaires = Questionnaire.objects.filter(gp=request.user, completed_gp=True, completed_guardian=True,\
-                dismiss_notification=False).exclude(review__len=0).order_by('-created')
+            questionnaires = Questionnaire.objects.\
+                filter(gp=request.user, completed_gp=True, completed_guardian=True, dismiss_notification=False).\
+                exclude(review__len=0).order_by('-created')
         elif role == 'specialist':
             questionnaires = Questionnaire.objects.filter(completed_gp=True, completed_guardian=True, review__len=0)\
                 .order_by('-created')
