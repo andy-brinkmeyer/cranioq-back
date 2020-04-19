@@ -15,7 +15,7 @@ from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSeria
 
 
 class QuestionnaireListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @staticmethod
     def get(request):

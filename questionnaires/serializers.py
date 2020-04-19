@@ -44,9 +44,11 @@ class AnswerSerializer(ModelSerializer):
 
 
 class UserInfoSerializer(ModelSerializer):
+    title = CharField(source='profile.title', read_only=True)
+
     class Meta:
         model = get_user_model()
-        fields = ['id', 'first_name', 'last_name']
+        fields = ['id', 'first_name', 'last_name', 'title']
 
 
 class QuestionnaireSerializer(ModelSerializer):
@@ -65,9 +67,9 @@ class QuestionnaireListSerializer(ModelSerializer):
         model = Questionnaire
         fields = ['id', 'patient_id', 'gp', 'access_id', 'email', 'completed_gp', 'completed_guardian',
                   'created', 'review']
-        
-class NotificationsSerializer(ModelSerializer):
 
+
+class NotificationsSerializer(ModelSerializer):
     class Meta:
         model = Questionnaire
         fields = ['id']

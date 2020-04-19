@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 
 class UserSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(source='profile.role.title', read_only=True)
+    title = serializers.CharField(source='profile.title', read_only=True)
     role = serializers.CharField(source='profile.role.role', read_only=True)
     clinic_name = serializers.CharField(source='profile.clinic_name', read_only=True)
     clinic_street = serializers.CharField(source='profile.clinic_street', read_only=True)
