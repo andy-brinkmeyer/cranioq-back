@@ -34,6 +34,7 @@ class UserView(APIView):
             email = request.data['email']
             first_name = request.data['first_name']
             last_name = request.data['last_name']
+            title = request.data['title']
             clinic_name = request.data['clinic_name']
             clinic_street = request.data['clinic_street']
             clinic_city = request.data['clinic_city']
@@ -44,6 +45,7 @@ class UserView(APIView):
         user.email = email
         user.first_name = first_name
         user.last_name = last_name
+        user.profile.title = title
         user.profile.clinic_name = clinic_name
         user.profile.clinic_street = clinic_street
         user.profile.clinic_city = clinic_city
