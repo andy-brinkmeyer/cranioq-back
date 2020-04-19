@@ -13,7 +13,8 @@ class Profile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
     clinic_name = models.CharField(max_length=100)
-    clinic_address = models.CharField(max_length=200, blank=True)
+    clinic_street = models.CharField(max_length=200, blank=True)
+    clinic_city = models.CharField(max_length=200, blank=True)
     clinic_postcode = models.CharField(max_length=20, blank=True)
 
     def __str__(self):

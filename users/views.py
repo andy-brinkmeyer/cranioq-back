@@ -35,7 +35,8 @@ class UserView(APIView):
             first_name = request.data['first_name']
             last_name = request.data['last_name']
             clinic_name = request.data['clinic_name']
-            clinic_address = request.data['clinic_address']
+            clinic_street = request.data['clinic_street']
+            clinic_city = request.data['clinic_city']
             clinic_postcode = request.data['clinic_postcode']
         except (KeyError, TypeError):
             return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -44,7 +45,8 @@ class UserView(APIView):
         user.first_name = first_name
         user.last_name = last_name
         user.profile.clinic_name = clinic_name
-        user.profile.clinic_address = clinic_address
+        user.profile.clinic_street = clinic_street
+        user.profile.clinic_city = clinic_city
         user.profile.clinic_postcode = clinic_postcode
 
         try:
