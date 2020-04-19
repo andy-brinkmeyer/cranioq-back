@@ -23,6 +23,7 @@ class Questionnaire(models.Model):
     access_id = models.CharField(max_length=8)
     gp = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.PROTECT)
     review = fields.ArrayField(base_field=models.CharField(max_length=200), size=5, blank=True, default=list)
+    reviewed_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='reviewed_by')
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

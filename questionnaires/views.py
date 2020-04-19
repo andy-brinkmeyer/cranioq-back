@@ -315,6 +315,7 @@ class ReviewView(APIView):
             return Response({'error_message': 'The questionnaire does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
 
         questionnaire.review = review
+        questionnaire.reviewed_by = request.user
         questionnaire.save()
 
         return Response(status=status.HTTP_200_OK)

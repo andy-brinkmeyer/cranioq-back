@@ -43,21 +43,23 @@ class AnswerSerializer(ModelSerializer):
         fields = ['question_id', 'answer']
 
 
-class QuestionnaireSerializer(ModelSerializer):
-    class Meta:
-        model = Questionnaire
-        fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed_gp', 'completed_guardian',
-                  'created', 'review']
-
-
-class GPForQuestionnaireListSerializer(ModelSerializer):
+class UserInfoSerializer(ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['id', 'first_name', 'last_name']
 
 
+class QuestionnaireSerializer(ModelSerializer):
+    reviewed_by = UserInfoSerializer()
+
+    class Meta:
+        model = Questionnaire
+        fields = ['id', 'patient_id', 'gp_id', 'access_id', 'email', 'completed_gp', 'completed_guardian',
+                  'created', 'review', 'reviewed_by']
+
+
 class QuestionnaireListSerializer(ModelSerializer):
-    gp = GPForQuestionnaireListSerializer()
+    gp = UserInfoSerializer()
 
     class Meta:
         model = Questionnaire
