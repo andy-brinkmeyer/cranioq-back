@@ -20,6 +20,8 @@ We also need to create a new user, grant him permissions and set some standard p
 - `ALTER ROLE cranioq_django SET timezone TO 'UTC';`
 - `GRANT ALL PRIVILEGES ON DATABASE cranioq_db TO cranioq_django;`
 
+Also make sure to grant the user read access to your local development database. This is required for Djangos unittest integration.
+
 Note that you can choose your own name for the database and your own credentials for the user, just make sure to modify the `pg_settings.py` file.
 
 ### Setting up Django to work with PostgreSQL
