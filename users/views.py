@@ -25,9 +25,15 @@ class UserView(APIView):
 
     @staticmethod
     def put(request, user_id):
+        if request.user.id != user_id:
+            return Response({'error_message': 'No permissions to change this data.'}, status=status.HTTP_403_FORBIDDEN)
+
         try:
             user = get_user_model().objects.get(pk=int(user_id))
         except ObjectDoesNotExist:
+            return Response({'error_message': 'This user does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if not hasattr(user, 'profile'):
             return Response({'error_message': 'This user does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
         try:

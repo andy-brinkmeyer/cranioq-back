@@ -149,19 +149,26 @@ version: v0.1
                 {
                   "displayable_message": "Details changed."
                 }
-        404:
-          body:
-            application/json:
-              example: |
-                {
-                  "error_message": "This user does not exist."
-                }
         400:
           body:
             application/json:
               example: |
                 {
                   "error_message": "Wrong data format."
+                }
+        403:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "No permissions to change this data."
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "error_message": "This user does not exist."
                 }
 
 /quests:
