@@ -316,6 +316,7 @@ class ReviewView(APIView):
 
         questionnaire.review = review
         questionnaire.reviewed_by = request.user
+        questionnaire.dismiss_notification = False
         questionnaire.save()
 
         return Response(status=status.HTTP_200_OK)
