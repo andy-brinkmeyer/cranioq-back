@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='questiontemplate',
             name='type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='questionnaires.QuestionTypes'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='questionnaires.QuestionType'),
         ),
     ]
