@@ -175,7 +175,31 @@ version: v0.1
   get:
     description: Fetch a list of questionnaires. Each page contains 100 items. GPs will only fetch their own questionnaires.
     queryParameters:
-      page: integer
+      page:
+        type: integer
+        required: false
+        default: 1
+      pageSize:
+        type: integer
+        required: false
+        default: 100
+        description: Define how many elements are returned per page. The max. page size is 1000.
+      patientID:
+        type: string
+        required: false
+      completedGP:
+        type: boolean
+        required: false
+      completedGuardian:
+        type: boolean
+        required: false
+      reviewed:
+        type: boolean
+        required: false
+      reviewedBy:
+        type: string
+        required: false
+        description: Searches by the last name of the specialist.
     responses:
       200:
         body:

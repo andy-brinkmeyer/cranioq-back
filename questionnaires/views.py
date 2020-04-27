@@ -11,11 +11,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import QuestionnaireTemplate, Answer, Questionnaire
 
 from .serializers import QuestionnairePostSerializer, QuestionnaireTemplateSerializer, TemplateInformationSerializer, \
-    QuestionnaireSerializer, QuestionnaireListSerializer, QuestionTemplateSerializer, AnswerSerializer, NotificationsSerializer
+    QuestionnaireSerializer, QuestionnaireListSerializer, QuestionTemplateSerializer, AnswerSerializer, \
+    NotificationsSerializer
 
 
 class QuestionnaireListView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     @staticmethod
     def get(request):
@@ -23,8 +24,44 @@ class QuestionnaireListView(APIView):
             page = int(request.query_params['page'])
         except (KeyError, ValueError):
             page = 1
-        start = (page - 1) * 100
-        end = page*100
+        try:
+            page_size = int(request.query_params['pageSize'])
+            if page_size > 1000:
+                page_size = 100
+            elif page_size < 1:
+                page_size = 1
+        except (KeyError, ValueError):
+            page_size = 100
+        start = (page - 1) * page_size
+        end = page * page_size
+
+        # create query parameters
+        query_params = dict()
+        if 'patientID' in request.query_params:
+            query_params['patient_id__contains'] = str(request.query_params['patientID'])
+
+        if 'completedGP' in request.query_params:
+            if request.query_params['completedGP'] == 'true':
+                query_params['completed_gp'] = True
+            elif request.query_params['completedGP'] == 'false':
+                query_params['completed_gp'] = False
+
+        if 'completedGuardian' in request.query_params:
+            if request.query_params['completedGuardian'] == 'true':
+                query_params['completed_guardian'] = True
+            elif request.query_params['completedGuardian'] == 'false':
+                query_params['completed_guardian'] = False
+
+        if 'reviewed' in request.query_params:
+            if request.query_params['reviewed'] == 'true':
+                query_params['reviewed_by__isnull'] = False
+            elif request.query_params['reviewed'] == 'false':
+                query_params['reviewed_by__isnull'] = True
+
+        if 'reviewedBy' in request.query_params:
+            if 'reviewed_by__isnull' in query_params:
+                del query_params['reviewed_by__isnull']
+            query_params['reviewed_by__last_name__contains'] = str(request.query_params['reviewedBy'])
 
         try:
             role = request.user.profile.role.role
@@ -33,9 +70,10 @@ class QuestionnaireListView(APIView):
             # return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
 
         if role == 'gp':
-            questionnaires = Questionnaire.objects.filter(gp=request.user).order_by('-created')[start:end]
+            questionnaires = Questionnaire.objects.filter(gp=request.user, **query_params)\
+            .order_by('-created')[start:end]
         elif role == 'specialist':
-            questionnaires = Questionnaire.objects.order_by('-created')[start:end]
+            questionnaires = Questionnaire.objects.filter(**query_params).order_by('-created')[start:end]
         else:
             return Response({'error_message': 'Access denied.'}, status=status.HTTP_403_FORBIDDEN)
 
