@@ -400,3 +400,13 @@ class NotificationsView(APIView):
             
         return Response(status=status.HTTP_200_OK)
 
+
+class TestView(APIView):
+    @staticmethod
+    def get(request):
+        return Response('Success')
+
+
+class TestView2(APIView):
+    def get(self, request):
+        return Response('Success')
