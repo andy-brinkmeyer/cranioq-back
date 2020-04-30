@@ -1,8 +1,9 @@
+import os
 from storages.backends.azure_storage import AzureStorage
 
 
 class PublicAzureStorage(AzureStorage):
-    account_name = 'cranioqstatic'
-    account_key = '2oSgUNatzP6/RjM+YbowYM3SjCvZUIrxBBB7E1t4q4VW/v5yng3WeP+AlYYrS85nPVn765jV1mWjc4yovg/oew=='
+    account_name = os.environ.get('ACCOUNT_NAME')
+    account_key = os.environ.get('ACCOUNT_KEY')
     azure_container = 'cranioq-static'
     expiration_secs = None
