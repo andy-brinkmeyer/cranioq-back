@@ -13,6 +13,4 @@ urlpatterns = [
     path('templates/<int:template_id>', views.QuestionnaireTemplateView.as_view()),
     path('notify', views.NotificationsView.as_view()),
     path('notify/<int:questionnaire_id>', views.NotificationsView.as_view()),
-    path('test', views.TestView.as_view()),
-    path('test2', views.TestView2.as_view()),
 ]
