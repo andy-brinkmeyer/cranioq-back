@@ -36,12 +36,16 @@ dev_database = {
         'PORT': '5432',
         'USER': 'USER',
         'PASSWORD': 'PASSWORD'
-    }
+    },
+    'prod': {
+        ...
+    },
 }
 ```
 
-Make sure you installed the `psycopg2` Python package and run the Django database migrations after setting up everything:
-`python manage.py migrate`
+You can add as many databases as you need. Make sure you installed the `psycopg2` Python package and run the Django database migrations after setting up everything:
+`python manage.py migrate --database DATABASE`. Replace `DATABASE` with the database from your `pg_settings.py` you want to migrate. This way you can 
+apply migrations to your production database if your hosting service does not do this automatically.
 
 # Create the Plagiocephaly Questionnaire
 After setting up the application and running all migratrions you can create the pre-defined Plagiocephaly questionnaire template by using 
