@@ -44,7 +44,7 @@ dev_database = {
 ```
 
 You can add as many databases as you need. Make sure you installed the `psycopg2` Python package and run the Django database migrations after setting up everything:
-`python manage.py migrate --database DATABASE`. Replace `DATABASE` with the database from your `pg_settings.py` you want to migrate. This way you can 
+`python manage.py migrate --database=DATABASE`. Replace `DATABASE` with the database from your `pg_settings.py` you want to migrate. This way you can 
 apply migrations to your production database if your hosting service does not do this automatically.
 
 # Create the Plagiocephaly Questionnaire
