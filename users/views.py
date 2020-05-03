@@ -15,6 +15,8 @@ class UserView(APIView):
 
     @staticmethod
     def get(request, user_id):
+        """This view is for requesting the user data using the user id."""
+
         try:
             user = get_user_model().objects.get(pk=int(user_id))
         except ObjectDoesNotExist:
@@ -25,6 +27,8 @@ class UserView(APIView):
 
     @staticmethod
     def put(request, user_id):
+        """This view is for changing user data."""
+
         if request.user.id != user_id:
             return Response({'error_message': 'No permissions to change this data.'}, status=status.HTTP_403_FORBIDDEN)
 

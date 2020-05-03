@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 
 class Role(models.Model):
+    """This model holds the available roles: "anon", "gp", "specialist"."""
     role = models.CharField(max_length=20)
 
     def __str__(self):
@@ -10,6 +11,8 @@ class Role(models.Model):
 
 
 class Profile(models.Model):
+    """This model extends the Django User model."""
+
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
     title = models.CharField(max_length=20)

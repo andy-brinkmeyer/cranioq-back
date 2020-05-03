@@ -20,6 +20,9 @@ class QuestionnaireListView(APIView):
 
     @staticmethod
     def get(request):
+        """This view is used to request a list of questionnaires that meet the search criterias."""
+
+        # check for page and page size parameters and impose some restrictions
         try:
             page = int(request.query_params['page'])
         except (KeyError, ValueError):
@@ -35,7 +38,7 @@ class QuestionnaireListView(APIView):
         start = (page - 1) * page_size
         end = page * page_size
 
-        # create query parameters
+        # create query parameters for Django
         query_params = dict()
         if 'patientID' in request.query_params:
             query_params['patient_id__contains'] = str(request.query_params['patientID'])
@@ -63,6 +66,7 @@ class QuestionnaireListView(APIView):
                 del query_params['reviewed_by__isnull']
             query_params['reviewed_by__last_name__contains'] = str(request.query_params['reviewedBy'])
 
+        # check for authorization and fetch the questionnaires
         try:
             role = request.user.profile.role.role
         except AttributeError:
@@ -70,7 +74,7 @@ class QuestionnaireListView(APIView):
 
         if role == 'gp':
             questionnaires = Questionnaire.objects.filter(gp=request.user, **query_params)\
-            .order_by('-created')[start:end]
+                .order_by('-created')[start:end]
         elif role == 'specialist':
             questionnaires = Questionnaire.objects.filter(**query_params).order_by('-created')[start:end]
         else:
@@ -85,6 +89,9 @@ class QuestionnaireView(APIView):
 
     @staticmethod
     def get(request, **kwargs):
+        """This view returns the a questionnaire using its ID."""
+
+        # check if the id is provided and try to fetch the questionnaire
         if 'questionnaire_id' not in kwargs:
             return Response({'error_message': 'No questionnaire ID provided.'}, status.HTTP_400_BAD_REQUEST)
 
@@ -93,6 +100,7 @@ class QuestionnaireView(APIView):
         except ObjectDoesNotExist:
             return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
 
+        # check for authorization and return the appropriate questions
         try:
             role = request.user.profile.role.role
         except AttributeError:
@@ -109,6 +117,7 @@ class QuestionnaireView(APIView):
             return Response({'error_message': 'Not authorized. You either need to be a GP or Specialist.'},
                             status=status.HTTP_403_FORBIDDEN)
 
+        # assemble the response
         template_data = QuestionnaireTemplateSerializer(questionnaire.template).data
         template_data['questions'] = QuestionTemplateSerializer(questions, many=True).data
 
@@ -121,6 +130,8 @@ class QuestionnaireView(APIView):
 
     @staticmethod
     def post(request, **kwargs):
+        """This view is used to create a new questionnaire."""
+
         questionnaire_data = request.data
 
         # check if user is GP
@@ -131,6 +142,7 @@ class QuestionnaireView(APIView):
         except AttributeError:
             return Response({'error_message': 'Only GPs can create new questionnaires.'},
                             status=status.HTTP_403_FORBIDDEN)
+
         questionnaire_data['gp_id'] = request.user.id
 
         # generate random access id
@@ -139,6 +151,7 @@ class QuestionnaireView(APIView):
             access_id = ''.join(random.choice(string.ascii_uppercase) for _ in range(8))
         questionnaire_data['access_id'] = access_id
 
+        # check if the data provided is valid and create a new questionnaire
         questionnaire = QuestionnairePostSerializer(data=questionnaire_data)
         try:
             agreed = request.data['agreed']
@@ -156,6 +169,9 @@ class QuestionnaireView(APIView):
 
     @staticmethod
     def put(request, **kwargs):
+        """This view is used to save and submit a questionnaire."""
+
+        # check if all the correct data is provided and do some checks
         try:
             questionnaire_id = request.data['questionnaireID']
             answers = request.data['answers']
@@ -186,7 +202,7 @@ class QuestionnaireView(APIView):
         except AttributeError:
             return Response({'error_message': 'Not authorized.'}, status=status.HTTP_403_FORBIDDEN)
 
-        # get all the allowed questions
+        # check if all the answers provided are allowed and save them
         question_set = questionnaire.template.questions.all()
         allowed_questions = {}
         for question in question_set:
@@ -221,6 +237,9 @@ class GuardianQuestionnaireView(APIView):
 
     @staticmethod
     def get(request, access_id):
+        """This view is used to return a questionnaire based on its access_id."""
+
+        # check if the user is anonymous, try to fetch the questionnaire and check if is already completed
         if type(request.user) is not AnonymousUser:
             return Response({'error_message': 'This route is for non-authenticated users only.'},
                             status=status.HTTP_401_UNAUTHORIZED)
@@ -232,9 +251,11 @@ class GuardianQuestionnaireView(APIView):
         if questionnaire.completed_guardian:
             return Response({'error_message': 'The questionnaire does not exist.'}, status.HTTP_404_NOT_FOUND)
 
+        # filter the questions by role
         questions = questionnaire.template.questions.filter(role__role='anon').order_by('id')
         answers = questionnaire.answers.filter(question__in=questions)
 
+        # serialize and assemble the response data
         template_data = QuestionnaireTemplateSerializer(questionnaire.template).data
         template_data['questions'] = QuestionTemplateSerializer(questions, many=True).data
 
@@ -247,6 +268,9 @@ class GuardianQuestionnaireView(APIView):
 
     @staticmethod
     def put(request, access_id):
+        """This view is for saving and sumbitting questionnaires."""
+
+        # try to fetch the questionnaire and do some checks
         try:
             questionnaire = Questionnaire.objects.get(access_id=access_id)
         except ObjectDoesNotExist:
@@ -271,7 +295,7 @@ class GuardianQuestionnaireView(APIView):
             return Response({'error_message': 'This route is for non-authenticated users only.'},
                             status=status.HTTP_403_FORBIDDEN)
 
-        # get all the allowed questions
+        # check if the answers are allowed and save them
         question_set = questionnaire.template.questions.all()
         allowed_questions = {}
         for question in question_set:
@@ -301,11 +325,13 @@ class GuardianQuestionnaireView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class QuestionnaireTemplatesView(APIView):
+class QuestionnaireTemplateListView(APIView):
     permission_classes = [IsAuthenticated]
 
     @staticmethod
     def get(request):
+        """This view is for fetching all available templates."""
+
         templates = QuestionnaireTemplate.objects.all()
         serialized_templates = TemplateInformationSerializer(templates, many=True)
         return Response(serialized_templates.data, status=status.HTTP_200_OK)
@@ -314,6 +340,8 @@ class QuestionnaireTemplatesView(APIView):
 class QuestionnaireTemplateView(APIView):
     @staticmethod
     def get(request, template_id):
+        """This view is for fetching a specific template using its id."""
+
         try:
             template = QuestionnaireTemplate.objects.get(pk=template_id)
         except ObjectDoesNotExist:
@@ -328,6 +356,9 @@ class ReviewView(APIView):
 
     @staticmethod
     def post(request, questionnaire_id):
+        """This view is for submitting a new review."""
+
+        # do some permission and data checks
         try:
             role = request.user.profile.role.role
         except AttributeError:
@@ -351,6 +382,7 @@ class ReviewView(APIView):
         except ObjectDoesNotExist:
             return Response({'error_message': 'The questionnaire does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # save the review
         questionnaire.review = review
         questionnaire.reviewed_by = request.user
         questionnaire.dismiss_notification = False
@@ -364,6 +396,7 @@ class NotificationsView(APIView):
 
     @staticmethod
     def get(request):
+        """This view is for fetching notifications of a user."""
 
         try:
             role = request.user.profile.role.role
@@ -385,6 +418,8 @@ class NotificationsView(APIView):
     
     @staticmethod
     def put(request, questionnaire_id):
+        """This view is for dismissing a notification."""
+
         try:
             questionnaire = Questionnaire.objects.get(id=questionnaire_id)
         except ObjectDoesNotExist:

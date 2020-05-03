@@ -11,6 +11,9 @@ from rest_framework.permissions import IsAuthenticated
 
 class LoginView(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
+        """This route is used request the authtoken using user credentials."""
+
+        # check if the required data was sent in ther equest body
         try:
             user_data = {
                 'username': request.data['username'],
@@ -19,8 +22,11 @@ class LoginView(ObtainAuthToken):
         except (KeyError, TypeError):
             return Response({'error_message': 'Wrong data format.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # check for empty fields
         if user_data['username'] == '' or user_data['password'] == '':
             raise ValidationError({'error_message': 'One or more fields were left empty.'})
+
+        # use the serializer class provided by the rest_framework to virify the user, then fetch the user and token
         serializer = self.serializer_class(data=user_data,
                                            context={'request': request})
         if not serializer.is_valid():
@@ -28,6 +34,7 @@ class LoginView(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
+        # get the role of the user
         if hasattr(user, 'profile'):
             role = user.profile.role.role
         else:
@@ -45,6 +52,8 @@ class VerifyView(APIView):
 
     @staticmethod
     def get(request):
+        """This route is used to verify an authtoken. It returns the id and role of the user on success."""
+
         user = request.user
         if user is AnonymousUser:
             return Response({'error_message': 'Invalid Token'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -64,6 +73,9 @@ class ChangePassword(APIView):
 
     @staticmethod
     def post(request):
+        """This route is used to change the users password."""
+
+        # check if the correct data is provided in the request body
         try:
             old_password = request.data['oldPassword']
             new_password = request.data['newPassword']
@@ -75,8 +87,8 @@ class ChangePassword(APIView):
             return Response({'error_message': 'The password must be strings'},
                             status=status.HTTP_400_BAD_REQUEST)
 
+        # fetch the user and do some checks before changing the password or rejecting the request
         user = request.user
-
         if not user.check_password(old_password):
             return Response({'error_message': 'Wrong password.'}, status=status.HTTP_401_UNAUTHORIZED)
 

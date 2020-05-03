@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """This class is used as a read-only interface for serializing user data."""
+
     title = serializers.CharField(source='profile.title', read_only=True)
     role = serializers.CharField(source='profile.role.role', read_only=True)
     clinic_name = serializers.CharField(source='profile.clinic_name', read_only=True)
