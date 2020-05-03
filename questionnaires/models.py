@@ -76,7 +76,7 @@ class QuestionTemplate(models.Model):
     type = models.ForeignKey('QuestionType', on_delete=models.PROTECT)
     question = models.CharField(max_length=500)
     description = models.TextField(blank=True)
-    answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True)
+    answers = fields.ArrayField(base_field=models.CharField(max_length=200), size=10, blank=True, default=list)
     category = models.ForeignKey('QuestionCategory', on_delete=models.PROTECT)
     role = models.ForeignKey('users.Role', on_delete=models.PROTECT)
 

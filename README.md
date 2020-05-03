@@ -42,3 +42,8 @@ dev_database = {
 
 Make sure you installed the `psycopg2` Python package and run the Django database migrations after setting up everything:
 `python manage.py migrate`
+
+# Create the Plagiocephaly Questionnaire
+After setting up the application and running all migratrions you can create the pre-defined Plagiocephaly questionnaire template by using 
+the `cranioq_back.plagio_questionnaire.create_questionnaire` function. Simply open a Django shell using `python manage.py shell` and import
+the function. It takes one argument, the database to use and reverts to `default` if no input is provided. 
