@@ -89,4 +89,4 @@ class NotificationsSerializer(ModelSerializer):
     """This serializers is used to serialize notifications."""
     class Meta:
         model = Questionnaire
-        fields = ['id']
+        fields = ['id', 'patient_id']
