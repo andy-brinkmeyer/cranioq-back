@@ -192,7 +192,7 @@ def create_questionnaire(database='default'):
         QuT(type=free_text, question='Sutural examination',
             description='Metopic, sargittal, left coronal, right coronal, left lambdoid, right lambdoid',
             category=cat_classification_head, role=gp),
-        QuT(type=free_text, question='Is imaging available? Please state the finsings.',
+        QuT(type=free_text, question='Is imaging available? Please state the findings.',
             category=cat_classification_head, role=gp)
     ]
 
